@@ -27,11 +27,11 @@ public class TaskManager {
         String chosenOption = choosingOption(OPTIONS_TO_SELECT);
 
         switch (chosenOption) {
-            case "add": add(dataFromFileArray);
+            case "add": dataFromFileArray = add(dataFromFileArray);
                 break;
-            case "remove": remove();
+            case "remove": dataFromFileArray = remove(dataFromFileArray);
                 break;
-            case "list": list();
+            case "list": list(dataFromFileArray);
                 break;
             case "exit": exit();
                 break;
@@ -79,7 +79,7 @@ public class TaskManager {
         return chosenOption.toLowerCase();
     }
 
-    private static void add(String[][] dataFromFileArray) {
+    private static String[][] add(String[][] dataFromFileArray) {
         Scanner scan = new Scanner(System.in);
         dataFromFileArray = Arrays.copyOf(dataFromFileArray, dataFromFileArray.length+1);  //differently than in readDataFromFile() method, I don't use addAll from ArrayUtils here;
         dataFromFileArray[dataFromFileArray.length-1] = new String[3];  //NEW muszę inicjalizować 2. wymiar, bez tego jt null
@@ -87,7 +87,7 @@ public class TaskManager {
         dataFromFileArray[dataFromFileArray.length-1][0] = scan.nextLine();
         dataFromFileArray[dataFromFileArray.length-1][1] = dateAddAndValidation();
         dataFromFileArray[dataFromFileArray.length-1][2] = importanceAddAndValidation();
-        System.out.println("test w metodzie: " + Arrays.deepToString(dataFromFileArray));
+        return dataFromFileArray;
     }
 
     private static String dateAddAndValidation() {         //In this task I want to validate with loops, Array and NumberUtils and without date API or regex
@@ -140,10 +140,46 @@ public class TaskManager {
         return importance;
     }
 
-    private static void remove() {
+    private static String[][] remove(String[][] dataFromFileArray) {
+        Scanner scan = new Scanner(System.in);
+        System.out.println("Please select number to remove from the list. If you want to display list type \'list\', if you want to quit remove option type \'quit\'.");
+        String numberToRemove;
+        while (true){
+            numberToRemove = scan.nextLine().trim();
+            if(numberToRemove.equalsIgnoreCase("list")){
+                list(dataFromFileArray);
+                System.out.println("Please select number to remove from the list");
+                continue;
+            }
+            if(numberToRemove.equalsIgnoreCase("quit")){
+                System.out.println("You are quitting the option.");
+                break;
+            }
+            if(!StringUtils.isNumeric(numberToRemove)){
+                System.out.println("Inserted data is not a number. Please select number to remove from the list. If you want to display list type \'list\', if you want to quit remove option type \'quit\'.");
+                continue;
+            }
+            try{
+                dataFromFileArray = ArrayUtils.remove(dataFromFileArray, Integer.parseInt(numberToRemove));
+                System.out.println("Entry number " + numberToRemove + " was removed");
+                break;
+            } catch (ArrayIndexOutOfBoundsException e){
+                System.out.println("Given number doesn't exist. Please type a number from the list. If you want to display list type \'list\', if you want to quit remove option type \'quit\'.");
+                continue;
+            }
+        }
+        return dataFromFileArray;
     }
 
-    private static void list() {
+    private static void list(String[][] dataFromFileArray) {
+        int counter = 0;
+        for (String[] array : dataFromFileArray) {
+            System.out.print(counter + " : ");
+            for (String index : array) {
+                System.out.print(index + " ");
+            }
+            System.out.println("\b");
+        }
     }
 
     private static void exit() {
