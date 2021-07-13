@@ -6,6 +6,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -23,22 +25,25 @@ public class TaskManager {
         }
         System.out.println("TEST: " + Arrays.deepToString(dataFromFileArray));
 
-        final String[] OPTIONS_TO_SELECT = displayOptions();
-        String chosenOption = choosingOption(OPTIONS_TO_SELECT);
+        while(true) {
+            String[] optionsToSelect = displayOptions();
+            String chosenOption = choosingOption(optionsToSelect);
 
-        switch (chosenOption) {
-            case "add": dataFromFileArray = add(dataFromFileArray);
-                break;
-            case "remove": dataFromFileArray = remove(dataFromFileArray);
-                break;
-            case "list": list(dataFromFileArray);
-                break;
-            case "exit": exit();
-                break;
+            switch (chosenOption) {
+                case "add":
+                    dataFromFileArray = add(dataFromFileArray);
+                    break;
+                case "remove":
+                    dataFromFileArray = remove(dataFromFileArray);
+                    break;
+                case "list":
+                    list(dataFromFileArray);
+                    break;
+                case "exit": exit(dataFromFileArray, csvFile);
+                    System.out.println(RED + "Bye, bye");
+                    return;
+            }
         }
-        System.out.println(Arrays.deepToString(dataFromFileArray));
-
-
     }
 
     private static String[][] readDataFromFile(String csvFileString) throws FileNotFoundException {
@@ -55,12 +60,12 @@ public class TaskManager {
     }
 
     private static String[] displayOptions() {
-        final String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "exit"};
+        String[] optionsToSelect = new String[]{"add", "remove", "list", "exit"};
         System.out.println(BLUE + "Please select an option (choose only one option):" + RESET);
-        for (String row : OPTIONS_TO_SELECT) {
+        for (String row : optionsToSelect) {
             System.out.println(row);
         }
-        return OPTIONS_TO_SELECT;
+        return optionsToSelect;
     }
 
     private static String choosingOption(String[] optionsToSelect) {
@@ -163,7 +168,7 @@ public class TaskManager {
                 dataFromFileArray = ArrayUtils.remove(dataFromFileArray, Integer.parseInt(numberToRemove));
                 System.out.println("Entry number " + numberToRemove + " was removed");
                 break;
-            } catch (ArrayIndexOutOfBoundsException e){
+            } catch (IndexOutOfBoundsException e){
                 System.out.println("Given number doesn't exist. Please type a number from the list. If you want to display list type \'list\', if you want to quit remove option type \'quit\'.");
                 continue;
             }
@@ -173,6 +178,7 @@ public class TaskManager {
 
     private static void list(String[][] dataFromFileArray) {
         int counter = 0;
+        System.out.println(CYAN + "List: ");
         for (String[] array : dataFromFileArray) {
             System.out.print(counter + " : ");
             for (String index : array) {
@@ -180,8 +186,24 @@ public class TaskManager {
             }
             System.out.println("\b");
         }
+        System.out.println();
     }
 
-    private static void exit() {
+    private static void exit(String[][] dataFromFileArray, String csvFile) {
+        try(FileWriter fileWriter = new FileWriter(csvFile)) {
+            for (int i = 0; i < dataFromFileArray.length; i++) {
+                for (int j = 0; j < dataFromFileArray[i].length; j++) {
+                    if(j == dataFromFileArray[i].length - 1)
+                        fileWriter.append(dataFromFileArray[i][j]).append("\n");
+                    else
+                        fileWriter.append(dataFromFileArray[i][j]).append(", ");
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("There was a problem with finding or writing to a file. Check directory");
+            e.printStackTrace();
+            return;
+        }
+
     }
 }
