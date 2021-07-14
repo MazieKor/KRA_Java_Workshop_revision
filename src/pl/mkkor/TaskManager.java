@@ -31,7 +31,7 @@ public class TaskManager {
             switch (chosenOption) {
                 case "add":
                     dataFromFileArray = add(dataFromFileArray);
-                    break;      //NEW break nie przerywa while'a
+                    break;
                 case "remove":
                     dataFromFileArray = remove(dataFromFileArray);
                     break;
@@ -41,7 +41,7 @@ public class TaskManager {
                 case "exit":
                     exit(dataFromFileArray, csvFile);
                     System.out.println(PURPLE_BRIGHT + "Bye, bye");
-                    return;           //NEW działa na main
+                    return;
             }
         }
     }
@@ -52,8 +52,8 @@ public class TaskManager {
 
         Scanner scan = new Scanner(csvFile);
         for (int i = 0; scan.hasNextLine(); i++) {
-            dataFromFileArray = ArrayUtils.addAll(dataFromFileArray, new String[1][]);  //NEW dodawanie tablicy
-            dataFromFileArray[i] = scan.nextLine().trim().split(", ");  //NEW przypisanie splitem
+            dataFromFileArray = ArrayUtils.addAll(dataFromFileArray, new String[1][]);
+            dataFromFileArray[i] = scan.nextLine().trim().split(", ");
         }
         scan.close();
         return dataFromFileArray;
@@ -85,12 +85,12 @@ public class TaskManager {
     private static String[][] add(String[][] dataFromFileArray) {
         Scanner scan = new Scanner(System.in);
         dataFromFileArray = Arrays.copyOf(dataFromFileArray, dataFromFileArray.length + 1);  //differently than in readDataFromFile() method, I don't use addAll from ArrayUtils here;
-        dataFromFileArray[dataFromFileArray.length - 1] = new String[3];  //NEW muszę inicjalizować 2. wymiar, bez tego jt null
+        dataFromFileArray[dataFromFileArray.length - 1] = new String[3];
         System.out.println("Please add task description");
         dataFromFileArray[dataFromFileArray.length - 1][0] = scan.nextLine().trim();
         dataFromFileArray[dataFromFileArray.length - 1][1] = dateAddAndValidation();
         dataFromFileArray[dataFromFileArray.length - 1][2] = importanceAddAndValidation();
-        return dataFromFileArray;
+        return dataFromFileArray;             //I have to return this new Array, because it's new object with new data (old Array was not change)
     }
 
     private static String dateAddAndValidation() {         //In this task I want to validate with loops, Array and NumberUtils and without date API or regex
@@ -104,7 +104,7 @@ public class TaskManager {
                 System.out.println(RED + "Date format is incorrect. " + RESET);
                 continue;
             }
-            if (dateArray[0].length() != 4 || !NumberUtils.isDigits(dateArray[0])) {
+            if (dateArray[0].length() != 4 || !StringUtils.isNumeric(dateArray[0])) {
                 System.out.println(RED + "You have typed incorrect Year format (not all of the data are numbers or there are too many/ too few signs). " + RESET);
                 continue;
             }
@@ -164,7 +164,7 @@ public class TaskManager {
                 continue;
             }
             try {
-                dataFromFileArray = ArrayUtils.remove(dataFromFileArray, Integer.parseInt(numberToRemove));  //NEW mogę index z 2-wym też usunąć
+                dataFromFileArray = ArrayUtils.remove(dataFromFileArray, Integer.parseInt(numberToRemove));
                 System.out.println(YELLOW + "Entry number " + numberToRemove + " was removed" + RESET);
                 break;
             } catch (IndexOutOfBoundsException e) {
@@ -198,7 +198,7 @@ public class TaskManager {
                         fileWriter.append(dataFromFileArray[i][j]).append(", ");
                 }
             }
-            System.out.println(CYAN_UNDERLINED + "All data were saved in a file");
+            System.out.println(WHITE_UNDERLINED + "All data were saved in a file");
         } catch (IOException e) {
             System.out.println(RED + "There was a problem with finding or writing to a file. Check directory" + RESET);
             e.printStackTrace();
