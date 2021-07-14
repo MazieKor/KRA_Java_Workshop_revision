@@ -17,11 +17,11 @@ import static pl.mkkor.ConsoleColors.*;
 public class TaskManager2 {
     final static String csvFile = "tasks2.csv";  //NEW zrobienie pól sprawia, że nie muszę przesyłać zmiennych (każda metoda ma do nich dostęp)
     final static String[] optionsToSelect = new String[]{"add", "remove", "list", "exit"};
+    static String[][] dataFromFileArray;
 
     public static void main(String[] args) {
-        String[][] dataFromFileArray;
         try {
-            dataFromFileArray = readDataFromFile();
+            readDataFromFile();
         } catch (FileNotFoundException e) {
             System.out.println("Given file: '" + csvFile + "' has not been found. Check file directory");
             return;
@@ -33,24 +33,24 @@ public class TaskManager2 {
 
             switch (chosenOption) {
                 case "add":
-                    dataFromFileArray = add(dataFromFileArray);
+                    add();
                     break;
                 case "remove":
-                    dataFromFileArray = remove(dataFromFileArray);
+                    remove();
                     break;
                 case "list":
-                    list(dataFromFileArray);
+                    list();
                     break;
                 case "exit":
-                    exit(dataFromFileArray);
+                    exit();
                     System.out.println(PURPLE_BRIGHT + "Bye, bye");
                     return;
             }
         }
     }
 
-    private static String[][] readDataFromFile() throws FileNotFoundException {
-        String[][] dataFromFileArray = new String[0][];
+    private static void readDataFromFile() throws FileNotFoundException {
+        dataFromFileArray = new String[0][];
         File csvFileDirectory = new File(csvFile);
 
         Scanner scan = new Scanner(csvFileDirectory);
@@ -59,7 +59,6 @@ public class TaskManager2 {
             dataFromFileArray[i] = scan.nextLine().trim().split(", ");
         }
         scan.close();
-        return dataFromFileArray;
     }
 
     private static void displayOptions() {
@@ -85,7 +84,7 @@ public class TaskManager2 {
         return chosenOption.toLowerCase();
     }
 
-    private static String[][] add(String[][] dataFromFileArray) {
+    private static void add() {
         Scanner scan = new Scanner(System.in);
         dataFromFileArray = Arrays.copyOf(dataFromFileArray, dataFromFileArray.length + 1);  //differently than in readDataFromFile() method, I don't use addAll from ArrayUtils here;
         dataFromFileArray[dataFromFileArray.length - 1] = new String[3];
@@ -93,7 +92,6 @@ public class TaskManager2 {
         dataFromFileArray[dataFromFileArray.length - 1][0] = scan.nextLine().trim();
         dataFromFileArray[dataFromFileArray.length - 1][1] = dateAddAndValidation();
         dataFromFileArray[dataFromFileArray.length - 1][2] = importanceAddAndValidation();
-        return dataFromFileArray;             //I have to return this new Array, because it's new object with new data (old Array was not change)
     }
 
     private static String dateAddAndValidation() {         //In this task I want to validate with loops, Array and NumberUtils and without date API or regex
@@ -147,14 +145,14 @@ public class TaskManager2 {
         return importance;
     }
 
-    private static String[][] remove(String[][] dataFromFileArray) {
+    private static void remove() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please select number to remove from the list. If you want to display list type 'list', if you want to quit remove option type 'quit'.");
         String numberToRemove;
         while (true) {
             numberToRemove = scan.nextLine().trim();
             if (numberToRemove.equalsIgnoreCase("list")) {
-                list(dataFromFileArray);
+                list();
                 System.out.println("Please select number to remove from the list");
                 continue;
             }
@@ -174,10 +172,9 @@ public class TaskManager2 {
                 System.out.println(RED + "Given number doesn't exist. Please type a number from the list." + RESET + " If you want to display list type 'list', if you want to quit remove option type 'quit'.");
             }
         }
-        return dataFromFileArray;
     }
 
-    private static void list(String[][] dataFromFileArray) {
+    private static void list() {
         int counter = 0;
         System.out.println(PURPLE + "List: " + RESET);
         for (String[] array : dataFromFileArray) {
@@ -191,7 +188,7 @@ public class TaskManager2 {
         System.out.println();
     }
 
-    private static void exit(String[][] dataFromFileArray) {
+    private static void exit() {
         try (FileWriter fileWriter = new FileWriter(csvFile)) {
             for (int i = 0; i < dataFromFileArray.length; i++) {
                 for (int j = 0; j < dataFromFileArray[i].length; j++) {
