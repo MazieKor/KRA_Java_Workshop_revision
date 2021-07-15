@@ -13,17 +13,17 @@ import java.util.Scanner;
 
 import static pl.mkkor.ConsoleColors.*;
 
-//2nd Solution - with class fields instead of local variables
+//2nd Solution - with class fields instead of local variables as in 1st Solution (class TaskManager)
 public class TaskManager2 {
-    final static String csvFile = "tasks2.csv";  //NEW zrobienie pól sprawia, że nie muszę przesyłać zmiennych (każda metoda ma do nich dostęp)
-    final static String[] optionsToSelect = new String[]{"add", "remove", "list", "exit"};
+    final static String CSV_FILE = "tasks2.csv";
+    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "exit"};
     static String[][] dataFromFileArray;
 
     public static void main(String[] args) {
         try {
             readDataFromFile();
         } catch (FileNotFoundException e) {
-            System.out.println("Given file: '" + csvFile + "' has not been found. Check file directory");
+            System.out.println("Given file: '" + CSV_FILE + "' has not been found. Check file directory");
             return;
         }
 
@@ -51,7 +51,7 @@ public class TaskManager2 {
 
     private static void readDataFromFile() throws FileNotFoundException {
         dataFromFileArray = new String[0][];
-        File csvFileDirectory = new File(csvFile);
+        File csvFileDirectory = new File(CSV_FILE);
 
         Scanner scan = new Scanner(csvFileDirectory);
         for (int i = 0; scan.hasNextLine(); i++) {
@@ -63,7 +63,7 @@ public class TaskManager2 {
 
     private static void displayOptions() {
         System.out.println(BLUE + "Please select an option (choose only one option):" + RESET);
-        for (String row : optionsToSelect) {
+        for (String row : OPTIONS_TO_SELECT) {
             System.out.println(row);
         }
     }
@@ -73,8 +73,8 @@ public class TaskManager2 {
         String chosenOption;
         while (true) {
             chosenOption = scan.nextLine().trim();
-            if (!StringUtils.equalsAnyIgnoreCase(chosenOption, optionsToSelect[0], optionsToSelect[1],
-                    optionsToSelect[2], optionsToSelect[3])) {
+            if (!StringUtils.equalsAnyIgnoreCase(chosenOption, OPTIONS_TO_SELECT[0], OPTIONS_TO_SELECT[1],
+                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3])) {
                 System.out.println(RED + "Option chosen by you is not supported by this app. ");
                 displayOptions();
                 continue;
@@ -189,7 +189,7 @@ public class TaskManager2 {
     }
 
     private static void exit() {
-        try (FileWriter fileWriter = new FileWriter(csvFile)) {
+        try (FileWriter fileWriter = new FileWriter(CSV_FILE)) {
             for (int i = 0; i < dataFromFileArray.length; i++) {
                 for (int j = 0; j < dataFromFileArray[i].length; j++) {
                     if (j == dataFromFileArray[i].length - 1)
