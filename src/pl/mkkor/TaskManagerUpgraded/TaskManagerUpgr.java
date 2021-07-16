@@ -17,7 +17,7 @@ import static pl.mkkor.TaskManagers.ConsoleColors.*;
 //3nd Solution - adding some additional options
 public class TaskManagerUpgr {
     final static String CSV_FILE = "tasks2.csv";
-    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "save", "exit"};
+    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "save", "exit", "exit w/o save"};
     static String[][] dataFromFileArray;
 
     public static void main(String[] args) {
@@ -50,6 +50,9 @@ public class TaskManagerUpgr {
                     break;
                 case "exit":
                     save();
+                    System.out.println(PURPLE_BRIGHT + "Bye, bye");
+                    return;
+                case "exit w/o save":
                     System.out.println(PURPLE_BRIGHT + "Bye, bye");
                     return;
             }
@@ -90,7 +93,7 @@ public class TaskManagerUpgr {
             chosenOption = scan.nextLine().trim();
             chosenOption = changeNumberToEquivalentListedOption(chosenOption);
             if (!StringUtils.equalsAnyIgnoreCase(chosenOption, OPTIONS_TO_SELECT[0], OPTIONS_TO_SELECT[1],
-                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3], OPTIONS_TO_SELECT[4], OPTIONS_TO_SELECT[5])) {
+                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3], OPTIONS_TO_SELECT[4], OPTIONS_TO_SELECT[5], OPTIONS_TO_SELECT[6])) {
                 System.out.println(RED + "Option chosen by you is not supported by this app. ");
                 displayOptions();
                 continue;
@@ -209,8 +212,9 @@ public class TaskManagerUpgr {
     private static void remove() {
         Scanner scan = new Scanner(System.in);
         String numberToRemove;
+        removingLoop:
         while (true) {
-            System.out.println("Please select number of task to remove it from the list. If you want to display list type 'list' (in that case DO NOT type any number), if you want to quit remove option type 'quit'.");
+            System.out.println("Please select number (or numbers) of task to remove it from the list (if you want remove multiple tasks separate numbers with a 1 comma (,) ). If you want to display list type 'list', if you want to quit 'remove option' type 'quit'.");
             numberToRemove = scan.nextLine().trim();
 
             if (isQuitting(numberToRemove)) break;
@@ -219,17 +223,44 @@ public class TaskManagerUpgr {
                 list();
                 continue;
             }
-            if (!StringUtils.isNumeric(numberToRemove)) {
-                System.out.print(RED + "Typed data is not a number. " + RESET);
-                continue;
+
+            String[] tasksToRemove = numberToRemove.split(",");
+            trimArrayElements(tasksToRemove);
+            if (!areTrimmedArrayElementsDigits(tasksToRemove)) continue removingLoop;
+
+            for (String taskToRemove : tasksToRemove) {
+                if(Integer.parseInt(taskToRemove) - 1 >= dataFromFileArray.length){
+                    System.out.println(RED + "Number " + taskToRemove + " you inserted is not on the list." + RESET);
+                    continue removingLoop;
+                }
             }
-            try {
-                dataFromFileArray = ArrayUtils.remove(dataFromFileArray, Integer.parseInt(numberToRemove) - 1);
-                System.out.println(YELLOW + "Entry number " + numberToRemove + " was removed\n" + RESET);
-                break;
-            } catch (IndexOutOfBoundsException e) {
-                System.out.print(RED + "Given number doesn't exist. " + RESET);
+
+            for (String taskToRemove : tasksToRemove)
+                    Arrays.fill(dataFromFileArray, Integer.parseInt(taskToRemove)-1, Integer.parseInt(taskToRemove), null);
+
+            dataFromFileArray = ArrayUtils.removeAllOccurences(dataFromFileArray, null);  //NEW pamiętać ze ArrayUtil robi kopię
+
+            if(tasksToRemove.length>1)
+                System.out.println(YELLOW + "Entry numbers: " + String.join(", ", tasksToRemove) + " were removed\n" + RESET);
+            else if(tasksToRemove.length == 1)
+                System.out.println(YELLOW + "Entry number " + String.join("", tasksToRemove) + " was removed\n" + RESET);
+            break;
+        }
+    }
+
+    private static boolean areTrimmedArrayElementsDigits(String[] tasksToRemove) {
+        for (String taskToRemove : tasksToRemove) {
+            if (!NumberUtils.isDigits(taskToRemove)) {
+                System.out.println(RED + "Not all elements to remove you signed are numbers or there are some characters other than 1 comma (eg. space, dot or double comma)" + RESET);
+                return false;
             }
+        }
+        return true;
+    }
+
+    private static void trimArrayElements(String[] tasksToRemove) {
+        for (int i = 0; i < tasksToRemove.length; i++) {
+            tasksToRemove[i] = tasksToRemove[i].trim();
         }
     }
 
