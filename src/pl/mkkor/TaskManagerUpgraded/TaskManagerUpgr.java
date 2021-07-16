@@ -17,7 +17,7 @@ import static pl.mkkor.TaskManagers.ConsoleColors.*;
 //3nd Solution - adding some additional options
 public class TaskManagerUpgr {
     final static String CSV_FILE = "tasks2.csv";
-    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "save", "exit", "exit w/o save"};
+    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "list ordered", "save", "exit", "exit w/o save"};
     static String[][] dataFromFileArray;
 
     public static void main(String[] args) {
@@ -44,6 +44,9 @@ public class TaskManagerUpgr {
                     break;
                 case "list important":
                     listImportant();
+                    break;
+                case "list ordered":
+                    listOrdered();
                     break;
                 case "save":
                     save();
@@ -93,7 +96,7 @@ public class TaskManagerUpgr {
             chosenOption = scan.nextLine().trim();
             chosenOption = changeNumberToEquivalentListedOption(chosenOption);
             if (!StringUtils.equalsAnyIgnoreCase(chosenOption, OPTIONS_TO_SELECT[0], OPTIONS_TO_SELECT[1],
-                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3], OPTIONS_TO_SELECT[4], OPTIONS_TO_SELECT[5], OPTIONS_TO_SELECT[6])) {
+                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3], OPTIONS_TO_SELECT[4], OPTIONS_TO_SELECT[5], OPTIONS_TO_SELECT[6], OPTIONS_TO_SELECT[7])) {
                 System.out.println(RED + "Option chosen by you is not supported by this app. ");
                 displayOptions();
                 continue;
@@ -276,7 +279,7 @@ public class TaskManagerUpgr {
 //LISTING OF ENTRIES OPTION
     private static void list() {
         int counter = 1;
-        System.out.println(PURPLE + "List: " + RESET);
+        System.out.println(PURPLE + "\nList: " + RESET);
         for (String[] array : dataFromFileArray) {
             System.out.print(" " + counter + " : ");
             for (String index : array) {
@@ -290,7 +293,7 @@ public class TaskManagerUpgr {
 
     private static void listImportant() {
         int counter = 1;
-        System.out.println(PURPLE + "List of important issues: " + RESET);
+        System.out.println(PURPLE + "\nList of important issues: " + RESET);
         for (int i = 0; i < dataFromFileArray.length; i++) {
             if(dataFromFileArray[i][2].equals("true")) {
                 System.out.print(" " + counter + " : ");
@@ -302,8 +305,25 @@ public class TaskManagerUpgr {
             }
         }
         System.out.println(CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
+    }
 
-
+    private static void listOrdered() {
+        String[] datesFromArray = new String[dataFromFileArray.length];
+        for (int i = 0; i < dataFromFileArray.length; i++) {
+            datesFromArray[i] = dataFromFileArray[i][1];
+        }
+        Arrays.sort(datesFromArray);
+        System.out.println(PURPLE + "\nList of issues ordered by date from the newest: " + RESET);
+        int counter = 1;
+        for (int i = 0; i < datesFromArray.length; i++) {
+            for (int j = 0; j < TaskManagerUpgr.dataFromFileArray.length; j++){
+                if(datesFromArray[i].equals(TaskManagerUpgr.dataFromFileArray[j][1])) {
+                System.out.print(" " + counter + " : ");
+                System.out.println(TaskManagerUpgr.dataFromFileArray[j][0] + " " + TaskManagerUpgr.dataFromFileArray[j][1] + " " + TaskManagerUpgr.dataFromFileArray[j][2]);
+                counter++;
+                }
+            }
+        }
     }
 
 //SAVE OPTION
