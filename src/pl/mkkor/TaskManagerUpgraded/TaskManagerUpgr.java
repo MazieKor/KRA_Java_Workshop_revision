@@ -1,4 +1,4 @@
-package pl.mkkor.TaskManagers;
+package pl.mkkor.TaskManagerUpgraded;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -13,10 +13,10 @@ import java.util.Scanner;
 
 import static pl.mkkor.TaskManagers.ConsoleColors.*;
 
-//2nd Solution - with class fields instead of local variables as in 1st Solution (class TaskManager)
-public class TaskManager2 {
+//3nd Solution - adding some additional options
+public class TaskManagerUpgr {
     final static String CSV_FILE = "tasks2.csv";
-    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "exit"};
+    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "save", "exit"};
     static String[][] dataFromFileArray;
 
     public static void main(String[] args) {
@@ -41,8 +41,11 @@ public class TaskManager2 {
                 case "list":
                     list();
                     break;
+                case "save":
+                    save();
+                    break;
                 case "exit":
-                    exit();
+                    save();
                     System.out.println(PURPLE_BRIGHT + "Bye, bye");
                     return;
             }
@@ -73,6 +76,7 @@ public class TaskManager2 {
         String chosenOption;
         while (true) {
             chosenOption = scan.nextLine().trim();
+            chosenOption = changeNumberToEquivalentListedOption(chosenOption);
             if (!StringUtils.equalsAnyIgnoreCase(chosenOption, OPTIONS_TO_SELECT[0], OPTIONS_TO_SELECT[1],
                     OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3])) {
                 System.out.println(RED + "Option chosen by you is not supported by this app. ");
@@ -82,6 +86,17 @@ public class TaskManager2 {
             break;
         }
         return chosenOption.toLowerCase();
+    }
+
+    private static String changeNumberToEquivalentListedOption(String chosenOption) {
+        if(NumberUtils.isDigits(chosenOption)){
+            try {
+                chosenOption = OPTIONS_TO_SELECT[Integer.parseInt(chosenOption)-1];
+            } catch (IndexOutOfBoundsException e){
+                return chosenOption;
+            }
+        }
+        return chosenOption;
     }
 
     private static void add() {
@@ -101,34 +116,53 @@ public class TaskManager2 {
             System.out.println("Please add task due date(YYYY-MM-DD)");
             date = scan.nextLine().trim();
             String[] dateArray = date.split("-");
-            if (dateArray.length != 3 || date.length() != 10) {
-                System.out.println(RED + "Date format is incorrect. " + RESET);
-                continue;
-            }
-            System.out.println(Arrays.toString(dateArray));
-            if (dateArray[0].length() != 4 || !StringUtils.isNumeric(dateArray[0])) {
-                System.out.println(RED + "You have typed incorrect Year format (not all of the data are numbers or there are too many/ too few signs). " + RESET);
-                continue;
-            }
-            if (dateArray[1].length() != 2 || !NumberUtils.isDigits(dateArray[1])) {
-                System.out.println(RED + "You have given incorrect Month format (not all of the signs are numbers or there are too many/ too few signs). " + RESET);
-                continue;
-            }
-            if (Integer.parseInt(dateArray[1]) < 1 || Integer.parseInt(dateArray[1]) > 12) {
-                System.out.println(RED + "You have given incorrect Month date (Month date shouldn't be greater than 12 or less than 1). " + RESET);
-                continue;
-            }
-            if (dateArray[2].length() != 2 || !NumberUtils.isDigits(dateArray[2])) {
-                System.out.println(RED + "You have given incorrect Day format (not all of the signs are numbers or there are too many/ too few signs). " + RESET);
-                continue;
-            }
-            if (Integer.parseInt(dateArray[2]) < 1 || Integer.parseInt(dateArray[2]) > 31) {
-                System.out.println(RED + "You have typed incorrect Day date (Day date shouldn't be greater than 31 or less than 1). " + RESET);
-                continue;
-            }
+            if (!initialFormatValidation(date, dateArray)) continue;
+            if (!yearValidation(dateArray)) continue;
+            if (!monthValidation(dateArray)) continue;
+            if (!dayValidation(dateArray)) continue;
             break;
         }
         return date;
+    }
+
+    private static boolean initialFormatValidation(String date, String[] dateArray) {
+        if (dateArray.length != 3 || date.length() != 10) {
+            System.out.println(RED + "Date format is incorrect. " + RESET);
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean yearValidation(String[] dateArray) {
+        if (dateArray[0].length() != 4 || !StringUtils.isNumeric(dateArray[0])) {
+            System.out.println(RED + "You have typed incorrect Year format (not all of the data are numbers or there are too many/ too few signs). " + RESET);
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean monthValidation(String[] dateArray) {
+        if (dateArray[1].length() != 2 || !NumberUtils.isDigits(dateArray[1])) {
+            System.out.println(RED + "You have given incorrect Month format (not all of the signs are numbers or there are too many/ too few signs). " + RESET);
+            return false;
+        }
+        if (Integer.parseInt(dateArray[1]) < 1 || Integer.parseInt(dateArray[1]) > 12) {
+            System.out.println(RED + "You have given incorrect Month date (Month date shouldn't be greater than 12 or less than 1). " + RESET);
+            return false;
+        }
+        return true;
+    }
+
+    private static boolean dayValidation(String[] dateArray) {
+        if (dateArray[2].length() != 2 || !NumberUtils.isDigits(dateArray[2])) {
+            System.out.println(RED + "You have given incorrect Day format (not all of the signs are numbers or there are too many/ too few signs). " + RESET);
+            return false;
+        }
+        if (Integer.parseInt(dateArray[2]) < 1 || Integer.parseInt(dateArray[2]) > 31) {
+            System.out.println(RED + "You have typed incorrect Day date (Day date shouldn't be greater than 31 or less than 1). " + RESET);
+            return false;
+        }
+        return true;
     }
 
     private static String importanceAddAndValidation() {
@@ -148,13 +182,12 @@ public class TaskManager2 {
 
     private static void remove() {
         Scanner scan = new Scanner(System.in);
-        System.out.println("Please select number to remove from the list. If you want to display list type 'list', if you want to quit remove option type 'quit'.");
         String numberToRemove;
         while (true) {
+            System.out.println("Please select number to remove from the list. If you want to display list type 'list', if you want to quit remove option type 'quit'.");
             numberToRemove = scan.nextLine().trim();
             if (numberToRemove.equalsIgnoreCase("list")) {
                 list();
-                System.out.println("Please select number to remove from the list");
                 continue;
             }
             if (numberToRemove.equalsIgnoreCase("quit")) {
@@ -162,7 +195,7 @@ public class TaskManager2 {
                 break;
             }
             if (!StringUtils.isNumeric(numberToRemove)) {
-                System.out.println(RED + "Typed data is not a number. Please select number to remove from the list." + RESET + " If you want to display list type 'list', if you want to quit remove option type 'quit'.");
+                System.out.print(RED + "Typed data is not a number. " + RESET);
                 continue;
             }
             try {
@@ -170,7 +203,7 @@ public class TaskManager2 {
                 System.out.println(YELLOW + "Entry number " + numberToRemove + " was removed" + RESET);
                 break;
             } catch (IndexOutOfBoundsException e) {
-                System.out.println(RED + "Given number doesn't exist. Please type a number from the list." + RESET + " If you want to display list type 'list', if you want to quit remove option type 'quit'.");
+                System.out.print(RED + "Given number doesn't exist. " + RESET);
             }
         }
     }
@@ -189,7 +222,7 @@ public class TaskManager2 {
         System.out.println();
     }
 
-    private static void exit() {
+    private static void save() {
         try (FileWriter fileWriter = new FileWriter(CSV_FILE)) {
             for (int i = 0; i < dataFromFileArray.length; i++) {
                 for (int j = 0; j < dataFromFileArray[i].length; j++) {
@@ -201,7 +234,7 @@ public class TaskManager2 {
             }
             System.out.println(WHITE_UNDERLINED + "All data were saved in a file");
         } catch (IOException e) {
-            System.out.println(RED + "There was a problem with finding or writing to a file. Check directory" + RESET);
+            System.out.println(RED + "There was a problem with finding or writing to a file. Check directory. " + RED_BOLD_BRIGHT +"Data were not saved" + RESET);
             e.printStackTrace();
         }
 
