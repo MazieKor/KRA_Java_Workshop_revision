@@ -72,7 +72,7 @@ public class TaskManagerUpgr {
 
 //DISPLAYING ALL OPTIONS
     private static void displayOptions() {
-        System.out.println(BLUE + "Please select an option (type number or option name, eg. '3' or 'list'):" + RESET);
+        System.out.println(BLUE + "Please select an option (type number + a dot or option name, eg. '3.' or 'list'):" + RESET);
         int counter = 1;
         for (String row : OPTIONS_TO_SELECT) {
             System.out.print(counter+ "." + row + "  |  ");
@@ -101,11 +101,14 @@ public class TaskManagerUpgr {
     }
 
     private static String changeNumberToEquivalentListedOption(String chosenOption) {
-        if(NumberUtils.isDigits(chosenOption)){
-            try {
-                chosenOption = OPTIONS_TO_SELECT[Integer.parseInt(chosenOption)-1];
-            } catch (IndexOutOfBoundsException e){
-                return chosenOption;
+        if(chosenOption.length()== 2 && chosenOption.charAt(1)=='.') {  //I added this condition to make users typing numbers with a dot. The reason behind that is that inside remove option there is also possibilty to list all entries (to remind which entry should be removed). To list all entries inside remove option user must type 'list' (not a number); but if user will be accustomed to typing 3 (without dot) for listing he/she can type 3 also in remove method, what results in removing number 3 entry (instead of listing). So I want to get user accustemd to type number + dot (what, if user mistakenly type in remove option doesn't remove anything)
+            chosenOption = chosenOption.substring(0, 1);
+            if (NumberUtils.isDigits(chosenOption)) {
+                try {
+                    chosenOption = OPTIONS_TO_SELECT[Integer.parseInt(chosenOption) - 1];
+                } catch (IndexOutOfBoundsException e) {
+                    return chosenOption;
+                }
             }
         }
         return chosenOption;
@@ -207,7 +210,7 @@ public class TaskManagerUpgr {
         Scanner scan = new Scanner(System.in);
         String numberToRemove;
         while (true) {
-            System.out.println("Please select number to remove from the list. If you want to display list type 'list', if you want to quit remove option type 'quit'.");
+            System.out.println("Please select number of task to remove it from the list. If you want to display list type 'list' (in that case DO NOT type any number), if you want to quit remove option type 'quit'.");
             numberToRemove = scan.nextLine().trim();
 
             if (isQuitting(numberToRemove)) break;
