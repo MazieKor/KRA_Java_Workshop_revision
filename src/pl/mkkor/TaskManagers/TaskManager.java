@@ -1,4 +1,4 @@
-package pl.mkkor;
+package pl.mkkor.TaskManagers;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static pl.mkkor.ConsoleColors.*;
+import static pl.mkkor.TaskManagers.ConsoleColors.*;
 
 public class TaskManager {
     public static void main(String[] args) {
@@ -100,7 +100,7 @@ public class TaskManager {
             System.out.println("Please add task due date(YYYY-MM-DD)");
             date = scan.nextLine().trim();
             String[] dateArray = date.split("-");
-            if (dateArray.length != 3) {
+            if (dateArray.length != 3 || date.length() != 10) {
                 System.out.println(RED + "Date format is incorrect. " + RESET);
                 continue;
             }

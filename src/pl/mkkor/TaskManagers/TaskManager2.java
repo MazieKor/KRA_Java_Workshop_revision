@@ -1,4 +1,4 @@
-package pl.mkkor;
+package pl.mkkor.TaskManagers;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Scanner;
 
-import static pl.mkkor.ConsoleColors.*;
+import static pl.mkkor.TaskManagers.ConsoleColors.*;
 
 //2nd Solution - with class fields instead of local variables as in 1st Solution (class TaskManager)
 public class TaskManager2 {
@@ -101,10 +101,11 @@ public class TaskManager2 {
             System.out.println("Please add task due date(YYYY-MM-DD)");
             date = scan.nextLine().trim();
             String[] dateArray = date.split("-");
-            if (dateArray.length != 3) {
+            if (dateArray.length != 3 || date.length() != 10) {
                 System.out.println(RED + "Date format is incorrect. " + RESET);
                 continue;
             }
+            System.out.println(Arrays.toString(dateArray));
             if (dateArray[0].length() != 4 || !StringUtils.isNumeric(dateArray[0])) {
                 System.out.println(RED + "You have typed incorrect Year format (not all of the data are numbers or there are too many/ too few signs). " + RESET);
                 continue;
