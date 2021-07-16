@@ -68,12 +68,13 @@ public class TaskManagerUpgr {
 
 //DISPLAYING ALL OPTIONS
     private static void displayOptions() {
-        System.out.println(BLUE + "Please select an option (type number or option name):" + RESET);
+        System.out.println(BLUE + "Please select an option (type number or option name, eg. '3' or 'list'):" + RESET);
         int counter = 1;
         for (String row : OPTIONS_TO_SELECT) {
-            System.out.println(" " + counter+ ". " + row);
+            System.out.print(counter+ "." + row + "  |  ");
             counter++;
         }
+        System.out.println("\b\b\b");
     }
 
 
