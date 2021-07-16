@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -16,7 +17,7 @@ import static pl.mkkor.TaskManagers.ConsoleColors.*;
 //3nd Solution - adding some additional options
 public class TaskManagerUpgr {
     final static String CSV_FILE = "tasks2.csv";
-    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "save", "exit"};
+    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "save", "exit"};
     static String[][] dataFromFileArray;
 
     public static void main(String[] args) {
@@ -40,6 +41,9 @@ public class TaskManagerUpgr {
                     break;
                 case "list":
                     list();
+                    break;
+                case "list important":
+                    listImportant();
                     break;
                 case "save":
                     save();
@@ -86,7 +90,7 @@ public class TaskManagerUpgr {
             chosenOption = scan.nextLine().trim();
             chosenOption = changeNumberToEquivalentListedOption(chosenOption);
             if (!StringUtils.equalsAnyIgnoreCase(chosenOption, OPTIONS_TO_SELECT[0], OPTIONS_TO_SELECT[1],
-                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3], OPTIONS_TO_SELECT[4])) {
+                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3], OPTIONS_TO_SELECT[4], OPTIONS_TO_SELECT[5])) {
                 System.out.println(RED + "Option chosen by you is not supported by this app. ");
                 displayOptions();
                 continue;
@@ -119,6 +123,7 @@ public class TaskManagerUpgr {
         dataFromFileArray[dataFromFileArray.length - 1][0] = description;
         dataFromFileArray[dataFromFileArray.length - 1][1] = dateAddAndValidation();
         dataFromFileArray[dataFromFileArray.length - 1][2] = importanceAddAndValidation();
+        System.out.println();
     }
 
     private static String dateAddAndValidation() {         //In this task I want to validate with loops, Array and NumberUtils and without date API or regex
@@ -217,7 +222,7 @@ public class TaskManagerUpgr {
             }
             try {
                 dataFromFileArray = ArrayUtils.remove(dataFromFileArray, Integer.parseInt(numberToRemove) - 1);
-                System.out.println(YELLOW + "Entry number " + numberToRemove + " was removed" + RESET);
+                System.out.println(YELLOW + "Entry number " + numberToRemove + " was removed\n" + RESET);
                 break;
             } catch (IndexOutOfBoundsException e) {
                 System.out.print(RED + "Given number doesn't exist. " + RESET);
@@ -249,6 +254,23 @@ public class TaskManagerUpgr {
         System.out.println();
     }
 
+    private static void listImportant() {
+        int counter = 1;
+        System.out.println(PURPLE + "List of important issues: " + RESET);
+        for (int i = 0; i < dataFromFileArray.length; i++) {
+            if(dataFromFileArray[i][2].equals("true")) {
+                System.out.print(" " + counter + " : ");
+                for (int j = 0; j < dataFromFileArray[i].length; j++) {
+                    System.out.print(dataFromFileArray[i][j] + " ");
+                }
+                System.out.println("\b");
+                counter++;
+            }
+        }
+        System.out.println(CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
+
+
+    }
 
 //SAVE OPTION
     private static void save() {
@@ -261,9 +283,9 @@ public class TaskManagerUpgr {
                         fileWriter.append(dataFromFileArray[i][j]).append(", ");
                 }
             }
-            System.out.println(WHITE_UNDERLINED + "All data were saved in a file");
+            System.out.println(WHITE_UNDERLINED + "All data were saved in a file.\n");
         } catch (IOException e) {
-            System.out.println(RED + "There was a problem with finding or writing to a file. Check directory. " + RED_BOLD_BRIGHT +"Data were not saved" + RESET);
+            System.out.println(RED + "There was a problem with finding or writing to a file. Check directory. " + RED_BOLD_BRIGHT +"Data were not saved\n" + RESET);
             e.printStackTrace();
         }
 
