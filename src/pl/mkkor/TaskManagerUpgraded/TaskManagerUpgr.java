@@ -78,7 +78,7 @@ public class TaskManagerUpgr {
             chosenOption = scan.nextLine().trim();
             chosenOption = changeNumberToEquivalentListedOption(chosenOption);
             if (!StringUtils.equalsAnyIgnoreCase(chosenOption, OPTIONS_TO_SELECT[0], OPTIONS_TO_SELECT[1],
-                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3])) {
+                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3], OPTIONS_TO_SELECT[4])) {
                 System.out.println(RED + "Option chosen by you is not supported by this app. ");
                 displayOptions();
                 continue;
@@ -101,10 +101,12 @@ public class TaskManagerUpgr {
 
     private static void add() {
         Scanner scan = new Scanner(System.in);
+        System.out.println("Please add task description. If you want to quit adding option type 'quit'");
+        String description = scan.nextLine().trim();
+        if(isQuitting(description)) return;
         dataFromFileArray = Arrays.copyOf(dataFromFileArray, dataFromFileArray.length + 1);  //differently than in readDataFromFile() method, I don't use addAll from ArrayUtils here;
         dataFromFileArray[dataFromFileArray.length - 1] = new String[3];
-        System.out.println("Please add task description");
-        dataFromFileArray[dataFromFileArray.length - 1][0] = scan.nextLine().trim();
+        dataFromFileArray[dataFromFileArray.length - 1][0] = description;
         dataFromFileArray[dataFromFileArray.length - 1][1] = dateAddAndValidation();
         dataFromFileArray[dataFromFileArray.length - 1][2] = importanceAddAndValidation();
     }
@@ -113,7 +115,7 @@ public class TaskManagerUpgr {
         Scanner scan = new Scanner(System.in);
         String date;
         while (true) {
-            System.out.println("Please add task due date(YYYY-MM-DD)");
+            System.out.println("Please add task due date(YYYY-MM-DD).");
             date = scan.nextLine().trim();
             String[] dateArray = date.split("-");
             if (!initialFormatValidation(date, dateArray)) continue;
@@ -169,7 +171,7 @@ public class TaskManagerUpgr {
         Scanner scan = new Scanner(System.in);
         String importance;
         while (true) {
-            System.out.println("Is your task important: true/false");
+            System.out.println("Is your task important");
             importance = scan.nextLine().trim().toLowerCase();
             if (!StringUtils.equalsAny(importance, "true", "false")) {
                 System.out.println(RED + "You have given incorrect data (neither true nor false). Please try once again. " + RESET);
@@ -186,13 +188,12 @@ public class TaskManagerUpgr {
         while (true) {
             System.out.println("Please select number to remove from the list. If you want to display list type 'list', if you want to quit remove option type 'quit'.");
             numberToRemove = scan.nextLine().trim();
+
+            if (isQuitting(numberToRemove)) break;
+
             if (numberToRemove.equalsIgnoreCase("list")) {
                 list();
                 continue;
-            }
-            if (numberToRemove.equalsIgnoreCase("quit")) {
-                System.out.println("You are quitting the remove option.");
-                break;
             }
             if (!StringUtils.isNumeric(numberToRemove)) {
                 System.out.print(RED + "Typed data is not a number. " + RESET);
@@ -206,6 +207,14 @@ public class TaskManagerUpgr {
                 System.out.print(RED + "Given number doesn't exist. " + RESET);
             }
         }
+    }
+
+    private static boolean isQuitting(String isQuitting) {
+        if (isQuitting.equals("quit")) {
+            System.out.println("You have quitted this option.\n" );
+            return true;
+        }
+        return false;
     }
 
     private static void list() {
