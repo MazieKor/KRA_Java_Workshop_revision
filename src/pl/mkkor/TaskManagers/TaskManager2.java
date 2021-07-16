@@ -105,7 +105,6 @@ public class TaskManager2 {
                 System.out.println(RED + "Date format is incorrect. " + RESET);
                 continue;
             }
-            System.out.println(Arrays.toString(dateArray));
             if (dateArray[0].length() != 4 || !StringUtils.isNumeric(dateArray[0])) {
                 System.out.println(RED + "You have typed incorrect Year format (not all of the data are numbers or there are too many/ too few signs). " + RESET);
                 continue;
