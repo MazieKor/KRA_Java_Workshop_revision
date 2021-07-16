@@ -215,7 +215,7 @@ public class TaskManagerUpgr {
                 continue;
             }
             try {
-                dataFromFileArray = ArrayUtils.remove(dataFromFileArray, Integer.parseInt(numberToRemove));
+                dataFromFileArray = ArrayUtils.remove(dataFromFileArray, Integer.parseInt(numberToRemove) - 1);
                 System.out.println(YELLOW + "Entry number " + numberToRemove + " was removed" + RESET);
                 break;
             } catch (IndexOutOfBoundsException e) {
