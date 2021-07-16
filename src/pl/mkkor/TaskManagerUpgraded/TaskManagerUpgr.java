@@ -52,6 +52,7 @@ public class TaskManagerUpgr {
         }
     }
 
+//READ DATA FROM FILE METHOD
     private static void readDataFromFile() throws FileNotFoundException {
         dataFromFileArray = new String[0][];
         File csvFileDirectory = new File(CSV_FILE);
@@ -64,13 +65,19 @@ public class TaskManagerUpgr {
         scan.close();
     }
 
+
+//DISPLAYING ALL OPTIONS
     private static void displayOptions() {
-        System.out.println(BLUE + "Please select an option (choose only one option):" + RESET);
+        System.out.println(BLUE + "Please select an option (type number or option name):" + RESET);
+        int counter = 1;
         for (String row : OPTIONS_TO_SELECT) {
-            System.out.println(row);
+            System.out.println(" " + counter+ ". " + row);
+            counter++;
         }
     }
 
+
+//CHOOSING OF THE OPTION
     private static String choosingOption() {
         Scanner scan = new Scanner(System.in);
         String chosenOption;
@@ -99,6 +106,8 @@ public class TaskManagerUpgr {
         return chosenOption;
     }
 
+
+//ADD OPTION
     private static void add() {
         Scanner scan = new Scanner(System.in);
         System.out.println("Please add task description. If you want to quit adding option type 'quit'");
@@ -186,6 +195,8 @@ public class TaskManagerUpgr {
         return importance;
     }
 
+
+//REMOVE OPTION
     private static void remove() {
         Scanner scan = new Scanner(System.in);
         String numberToRemove;
@@ -221,8 +232,10 @@ public class TaskManagerUpgr {
         return false;
     }
 
+
+//LISTING OF ENTRIES OPTION
     private static void list() {
-        int counter = 0;
+        int counter = 1;
         System.out.println(PURPLE + "List: " + RESET);
         for (String[] array : dataFromFileArray) {
             System.out.print(" " + counter + " : ");
@@ -235,6 +248,8 @@ public class TaskManagerUpgr {
         System.out.println();
     }
 
+
+//SAVE OPTION
     private static void save() {
         try (FileWriter fileWriter = new FileWriter(CSV_FILE)) {
             for (int i = 0; i < dataFromFileArray.length; i++) {
