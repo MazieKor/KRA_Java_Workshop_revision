@@ -115,7 +115,7 @@ public class TaskManagerUpgr {
         Scanner scan = new Scanner(System.in);
         String date;
         while (true) {
-            System.out.println("Please add task due date(YYYY-MM-DD).");
+            System.out.println("Please add task due date(YYYY-MM-DD)");
             date = scan.nextLine().trim();
             String[] dateArray = date.split("-");
             if (!initialFormatValidation(date, dateArray)) continue;
@@ -171,10 +171,14 @@ public class TaskManagerUpgr {
         Scanner scan = new Scanner(System.in);
         String importance;
         while (true) {
-            System.out.println("Is your task important");
+            System.out.println("Is your task important? If yes type '1' or 'true', if not type '2' or 'false'");
             importance = scan.nextLine().trim().toLowerCase();
+            if(importance.equals("1"))
+                importance = "true";
+            if(importance.equals("2"))
+                importance = "false";
             if (!StringUtils.equalsAny(importance, "true", "false")) {
-                System.out.println(RED + "You have given incorrect data (neither true nor false). Please try once again. " + RESET);
+                System.out.println(RED + "You have given incorrect data. Please try once again. " + RESET);
                 continue;
             }
             break;
