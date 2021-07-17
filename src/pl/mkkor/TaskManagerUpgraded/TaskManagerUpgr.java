@@ -20,6 +20,12 @@ public class TaskManagerUpgr {
     final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "list ordered", "save", "exit", "exit w/o save"};
     static String[][] dataFromFileArray;
 
+    static int lengthOfTable = 120;
+    static int lengthOfElem1;
+    static int lengthOfElem2;
+    static int lengthOfElem3;
+    static int lengthOfElem4;
+
     public static void main(String[] args) {
         try {
             readDataFromFile();
@@ -215,55 +221,29 @@ public class TaskManagerUpgr {
     private static void remove() {
         Scanner scan = new Scanner(System.in);
         String numberToRemove;
+
         removingLoop:
         while (true) {
-            System.out.println("Please select number (or numbers) of task to remove it from the list (if you want remove multiple tasks separate numbers with a 1 comma (,) ). If you want to display list type 'list', if you want to quit 'remove option' type 'quit'.");
+            System.out.println("Please select number (or numbers) of task you want to remove from the list (if you want remove multiple tasks separate numbers with a 1 comma (,) ).\nIf you want to display list: type 'list', if you want to quit 'remove option' type: 'quit'.");
             numberToRemove = scan.nextLine().trim();
 
             if (isQuitting(numberToRemove)) break;
-
-            if (numberToRemove.equalsIgnoreCase("list")) {
-                list();
-                continue;
-            }
+            if (numberToRemove.equalsIgnoreCase("list")) { list(); continue; }
 
             String[] tasksToRemove = numberToRemove.split(",");
             trimArrayElements(tasksToRemove);
             if (!areTrimmedArrayElementsDigits(tasksToRemove)) continue removingLoop;
-
-            for (String taskToRemove : tasksToRemove) {
-                if(Integer.parseInt(taskToRemove) - 1 >= dataFromFileArray.length){
-                    System.out.println(RED + "Number " + taskToRemove + " you inserted is not on the list." + RESET);
-                    continue removingLoop;
-                }
-            }
+            if (!areElementsToRemoveInTheList(tasksToRemove)) continue removingLoop;
 
             for (String taskToRemove : tasksToRemove)
                     Arrays.fill(dataFromFileArray, Integer.parseInt(taskToRemove)-1, Integer.parseInt(taskToRemove), null);
-
             dataFromFileArray = ArrayUtils.removeAllOccurences(dataFromFileArray, null);  //NEW pamiętać ze ArrayUtil robi kopię
 
             if(tasksToRemove.length>1)
                 System.out.println(YELLOW + "Entry numbers: " + String.join(", ", tasksToRemove) + " were removed\n" + RESET);
-            else if(tasksToRemove.length == 1)
+            else
                 System.out.println(YELLOW + "Entry number " + String.join("", tasksToRemove) + " was removed\n" + RESET);
             break;
-        }
-    }
-
-    private static boolean areTrimmedArrayElementsDigits(String[] tasksToRemove) {
-        for (String taskToRemove : tasksToRemove) {
-            if (!NumberUtils.isDigits(taskToRemove)) {
-                System.out.println(RED + "Not all elements to remove you signed are numbers or there are some characters other than 1 comma (eg. space, dot or double comma)" + RESET);
-                return false;
-            }
-        }
-        return true;
-    }
-
-    private static void trimArrayElements(String[] tasksToRemove) {
-        for (int i = 0; i < tasksToRemove.length; i++) {
-            tasksToRemove[i] = tasksToRemove[i].trim();
         }
     }
 
@@ -273,6 +253,36 @@ public class TaskManagerUpgr {
             return true;
         }
         return false;
+    }
+
+    private static void trimArrayElements(String[] tasksToRemove) {
+        for (int i = 0; i < tasksToRemove.length; i++) {
+            tasksToRemove[i] = tasksToRemove[i].trim();
+        }
+    }
+
+    private static boolean areTrimmedArrayElementsDigits(String[] tasksToRemove) {
+        if(tasksToRemove.length == 0) {
+            System.out.println(RED + "You didn't type any element to remove" + RESET);
+            return false;
+        }
+        for (String taskToRemove : tasksToRemove) {
+            if (!NumberUtils.isDigits(taskToRemove)) {
+                System.out.println(RED + "Not all elements to remove you signed are numbers or there is some empty elements or there are some characters other than 1 comma (eg. space, dot or double comma)" + RESET);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean areElementsToRemoveInTheList(String[] tasksToRemove) {
+        for (String taskToRemove : tasksToRemove) {
+            if(Integer.parseInt(taskToRemove) - 1 >= dataFromFileArray.length){
+                System.out.println(RED + "Number " + taskToRemove + " you inserted is not on the list." + RESET);
+                return false;
+            }
+        }
+        return true;
     }
 
 
@@ -316,14 +326,81 @@ public class TaskManagerUpgr {
         System.out.println(PURPLE + "\nList of issues ordered by date from the newest: " + RESET);
         int counter = 1;
         for (int i = 0; i < datesFromArray.length; i++) {
-            for (int j = 0; j < TaskManagerUpgr.dataFromFileArray.length; j++){
-                if(datesFromArray[i].equals(TaskManagerUpgr.dataFromFileArray[j][1])) {
+            for (int j = 0; j < dataFromFileArray.length; j++){
+                if(datesFromArray[i].equals(dataFromFileArray[j][1])) {
                 System.out.print(" " + counter + " : ");
-                System.out.println(TaskManagerUpgr.dataFromFileArray[j][0] + " " + TaskManagerUpgr.dataFromFileArray[j][1] + " " + TaskManagerUpgr.dataFromFileArray[j][2]);
+                System.out.println(dataFromFileArray[j][0] + " " + dataFromFileArray[j][1] + " " + dataFromFileArray[j][2]);
                 counter++;
                 }
             }
         }
+    }
+//    private static void list() {
+//        char decorElement = 9608;
+//        int lengthOfTable = 100;
+//        String topBorder = decorLine("",lengthOfTable,0,decorElement);
+//        String labelDescript = decorLine("description", lOfDescr, lOfCount + 1, ' ');
+//        System.out.println(GREEN + topBorder + RESET);
+//        System.out.println(PURPLE + " " + message + RESET);
+//        System.out.println(CYAN + "     " + labelDescript + "  date " + "importance" + RESET);
+
+//        String n = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
+//        System.out.println(GREEN + n + RESET);
+//        System.out.println(PURPLE + "message" + RESET);
+//        String stringOfSpaces = new String(new char[lengthOfTable]).replace('\u0000', ' ');
+//        StringBuilder s = new StringBuilder(stringOfSpaces);
+//        s.replace(lOfCount+1,"description".length()+lOfCount+1, "description").
+//                replace(lOfCount+lOfDescr+1, "date".length()+lOfCount+lOfDescr+1, "date").
+//                replace(lOfCount+lOfDescr+lOfDate+1, "import?".length()+lOfCount+lOfDescr+lOfDate+1, "import?");
+//        System.out.println(CYAN + s + RESET);
+
+//        listDecorationTop();
+//        int counter = 1;
+//        for (int i = 0; i < dataFromFileArray.length; i++) {
+//            System.out.print(" " + counter + " : ");
+//            System.out.println(fillLine(lengthOfTable, dataFromFileArray[i][0], dataFromFileArray[i][1], dataFromFileArray[i][2]));
+//            counter++;
+//        }
+//        System.out.println(GREEN + n + RESET);
+//    }
+
+    private static void listDecorationTop() {
+        char decorElement = 9608;
+        int lengthOfTable = 100;
+        String n = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
+        System.out.println(GREEN + n + RESET);
+        System.out.println(PURPLE + "message" + RESET);
+    }
+
+//    private static String fillLine(int lengthOfTable,String description, String date, String importance) {
+//        int lOfCount = 5;
+//        String elementCounter = new String(new char[lOfCount]).replace('\u0000', ' ')
+//
+//        int lOfImportance = 7;
+//        String elementCounter = new String(new char[lOfCount]).replace('\u0000', ' ')
+//
+//        int lOfDate = 12;
+//        String elementCounter = new String(new char[lOfCount]).replace('\u0000', ' ')
+//
+//        int lOfDescr = lengthOfTable - lOfCount - lOfImportance - lOfDate-2;
+//        String elementCounter = new String(new char[lOfCount]).replace('\u0000', ' ')
+//
+//        String stringOfSpaces = new String(new char[lengthOfTable]).replace('\u0000', ' ');
+//        StringBuilder s = new StringBuilder(stringOfSpaces);
+//        s.replace(lOfCount +1,description.length()+ lOfCount +1, description).
+//                replace(lOfCount + lOfDescr +1, date.length()+ lOfCount + lOfDescr +1, date).
+//                replace(lOfCount + lOfDescr + lOfDate +1, importance.length()+ lOfCount + lOfDescr + lOfDate +1, importance);
+//        return s.toString();
+//    }
+
+
+    private static String decorLine(String message, int lengthOfLine, int lengthOfInitialSpace, char fillingElement) {
+        String beforeMessage = new String(new char[lengthOfInitialSpace]).replace('\u0000', ' ');
+
+        String afterMessage = new String(new char[lengthOfLine - message.length() - lengthOfInitialSpace]);
+        afterMessage = afterMessage.replace('\u0000', fillingElement);
+        return beforeMessage + message + afterMessage;
+
     }
 
 //SAVE OPTION
