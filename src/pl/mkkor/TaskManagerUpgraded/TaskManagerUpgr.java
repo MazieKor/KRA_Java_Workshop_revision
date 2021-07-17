@@ -19,7 +19,7 @@ public class TaskManagerUpgr {
     final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "list ordered", "save", "exit", "exit w/o save"};
     static String[][] dataFromFileArray;
 
-    static int lengthOfTable = 100;
+    static int lengthOfTable = 110;
     static int lengthOfElem1 = 6;
     static int lengthOfElem3 = 12;
     static int lengthOfElem4 = 11;
@@ -201,7 +201,7 @@ public class TaskManagerUpgr {
         Scanner scan = new Scanner(System.in);
         String importance;
         while (true) {
-            System.out.println("Is your task important? If yes type '1' or 'true', if not type '2' or 'false'");
+            System.out.println("Is your task important? If YES type: '1' or 'true', if NOT type: '2' or 'false'");
             importance = scan.nextLine().trim().toLowerCase();
             if(importance.equals("1"))
                 importance = "true";
