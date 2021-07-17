@@ -16,7 +16,7 @@ import static pl.mkkor.TaskManagers.ConsoleColors.*;
 //3rd Solution - upgraded - adding some additional options and validations
 public class TaskManagerUpgr {
     final static String CSV_FILE = "tasks2.csv";
-    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "list ordered", "save", "exit", "exit w/o save"};
+    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list ordered", "list important", "list important ordered", "save", "exit", "exit w/o save"};
     static String[][] dataFromFileArray;
 
     static int lengthOfTable = 110;
@@ -47,11 +47,14 @@ public class TaskManagerUpgr {
                 case "list":
                     list("List of All Tasks:");
                     break;
+                case "list ordered":
+                    listOrdered("List of tasks ordered by date, from the earliest:");
+                    break;
                 case "list important":
                     listImportant("List of important tasks:");
                     break;
-                case "list ordered":
-                    listOrdered("List of tasks ordered by date, from the earliest:");
+                case "list important ordered":
+                    listImportantOrdered("List of important tasks ordered by date, from the earliest:");
                     break;
                 case "save":
                     save();
@@ -102,7 +105,7 @@ public class TaskManagerUpgr {
             chosenOption = scan.nextLine().trim();
             chosenOption = changeNumberToEquivalentListedOption(chosenOption);
             if (!StringUtils.equalsAnyIgnoreCase(chosenOption, OPTIONS_TO_SELECT[0], OPTIONS_TO_SELECT[1],
-                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3], OPTIONS_TO_SELECT[4], OPTIONS_TO_SELECT[5], OPTIONS_TO_SELECT[6], OPTIONS_TO_SELECT[7])) {
+                    OPTIONS_TO_SELECT[2], OPTIONS_TO_SELECT[3], OPTIONS_TO_SELECT[4], OPTIONS_TO_SELECT[5], OPTIONS_TO_SELECT[6], OPTIONS_TO_SELECT[7], OPTIONS_TO_SELECT[8])) {
                 System.out.println(RED + "Option chosen by you is not supported by this app. ");
                 displayOptions();
                 continue;
@@ -309,7 +312,7 @@ public class TaskManagerUpgr {
 //LISTING OF ENTRIES OPTION
 
     private static void listDecorationTop(String title) {
-        char decorElement = '█';
+        char decorElement = '\u2588';
         String topElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
         String titleLine = new String(new char[lengthOfTable - title.length() - 1]).replace('\u0000', ' ');
 
@@ -364,27 +367,6 @@ public class TaskManagerUpgr {
         return String.valueOf(counterLine.append(descriptionLine).append(dateLine).append(importanceLine));
     }
 
-    private static void listImportant(String title) {
-        listDecorationTop(title);
-
-        int counter = 1;
-        String description;
-        String date;
-        String importance;
-        for (int i = 0; i < dataFromFileArray.length; i++) {
-            if(dataFromFileArray[i][2].equals("true")) {
-                description = dataFromFileArray[i][0];
-                date = dataFromFileArray[i][1];
-                importance = dataFromFileArray[i][2];
-                System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
-                counter++;
-            }
-        }
-
-        listDecorationBottom();
-        System.out.println("\t " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
-    }
-
     private static void listOrdered(String title) {
         listDecorationTop(title);
         String[] datesFromArray = extractDimensionFrom2DimArray(1, dataFromFileArray);
@@ -425,12 +407,59 @@ public class TaskManagerUpgr {
         String[] uniqueFromArray = new String[1];
         uniqueFromArray[0] = inputArray[0];
         for (int i = 1; i < inputArray.length; i++) {
-                if(inputArray[i].equals(inputArray[i-1]))
-                    continue;
-                uniqueFromArray = ArrayUtils.add(uniqueFromArray, inputArray[i]);
+            if(inputArray[i].equals(inputArray[i-1]))
+                continue;
+            uniqueFromArray = ArrayUtils.add(uniqueFromArray, inputArray[i]);
         }
         return uniqueFromArray;
     }
+
+    private static void listImportant(String title) {
+        listDecorationTop(title);
+
+        int counter = 1;
+        String description;
+        String date;
+        String importance;
+        for (int i = 0; i < dataFromFileArray.length; i++) {
+            if(dataFromFileArray[i][2].equals("true")) {
+                description = dataFromFileArray[i][0];
+                date = dataFromFileArray[i][1];
+                importance = dataFromFileArray[i][2];
+                System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
+                counter++;
+            }
+        }
+
+        listDecorationBottom();
+        System.out.println("\t " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
+    }
+
+    private static void listImportantOrdered(String title) {
+        listDecorationTop(title);
+
+        String[] datesFromArray = extractDimensionFrom2DimArray(1, dataFromFileArray);
+        String[] uniqueDatesFromArray = createArrayWithUniqueElements(datesFromArray);
+
+        int counter = 1;
+        String description;
+        String date;
+        String importance;
+        for (int i = 0; i < uniqueDatesFromArray.length; i++) {
+            for (int j = 0; j < dataFromFileArray.length; j++){
+                if(uniqueDatesFromArray[i].equals(dataFromFileArray[j][1]) && dataFromFileArray[j][2].equals("true")) {
+                    description = dataFromFileArray[j][0];
+                    date = dataFromFileArray[j][1];
+                    importance = dataFromFileArray[j][2];
+                    System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
+                    counter++;
+                }
+            }
+        }
+        listDecorationBottom();
+        System.out.println("\t " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
+    }
+
 
 
 //SAVE OPTION
