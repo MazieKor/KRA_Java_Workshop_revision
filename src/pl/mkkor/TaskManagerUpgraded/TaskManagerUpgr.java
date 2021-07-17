@@ -267,7 +267,7 @@ public class TaskManagerUpgr {
             return false;
         }
         for (String taskToRemove : tasksToRemove) {
-            if (!NumberUtils.isDigits(taskToRemove)) {
+            if (!NumberUtils.isDigits(taskToRemove)) {   //Uwaga z digitami jeśli potem robię z nimi jakieś działania, np. wpisuję 1 albo 0 - sprawdza, ze jt digit, ale w dalszej części kodu ta liczba jest zmniejszana np. o 1 lub 2 i powstaje iczba minusowa - niby też liczba, ale z -, którego normalnie ta funkcja by nie przepuściała (bo np. index tablicy nie może być minusowy)
                 System.out.println(RED + "Not all elements to remove you typed are numbers or there are some empty elements or there are some characters other than 1 comma (eg. space, dot or double comma)" + RESET);
                 return false;
             }
@@ -301,7 +301,7 @@ public class TaskManagerUpgr {
     private static void listDecorationBottom() {
         char decorElement = '■';
         String bottomElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
-        System.out.println(GREEN + "\t " + bottomElement +"\n");
+        System.out.println(GREEN + "\t " + bottomElement +"\n" + RESET);
     }
 
     private static void list(String title) {
