@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.sql.SQLOutput;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -318,22 +317,43 @@ public class TaskManagerUpgr {
     }
 
     private static void listOrdered() {
-        String[] datesFromArray = new String[dataFromFileArray.length];
-        for (int i = 0; i < dataFromFileArray.length; i++) {
-            datesFromArray[i] = dataFromFileArray[i][1];
-        }
-        Arrays.sort(datesFromArray);
+        String[] datesFromArray = extractDimensionFrom2DimArray(1, dataFromFileArray);
+        String[] uniqueDatesFromArray = createArrayWithUniqueElements(datesFromArray);
+
         System.out.println(PURPLE + "\nList of issues ordered by date from the newest: " + RESET);
         int counter = 1;
-        for (int i = 0; i < datesFromArray.length; i++) {
+        for (int i = 0; i < uniqueDatesFromArray.length; i++) {
             for (int j = 0; j < dataFromFileArray.length; j++){
-                if(datesFromArray[i].equals(dataFromFileArray[j][1])) {
+                if(uniqueDatesFromArray[i].equals(dataFromFileArray[j][1])) {      //NEW IF NIE KOńCZY PĘTLI jak stosuję if w pętli a nie dam continue to po warunku sprawdza następne
                 System.out.print(" " + counter + " : ");
                 System.out.println(dataFromFileArray[j][0] + " " + dataFromFileArray[j][1] + " " + dataFromFileArray[j][2]);
                 counter++;
                 }
             }
         }
+        System.out.println();
+    }
+
+    private static String[] extractDimensionFrom2DimArray(int indexToExtract, String[][] extractedArray) {
+        String[] indexFrom2DimArray = new String[extractedArray.length];
+        for (int i = 0; i < extractedArray.length; i++) {
+            if(indexToExtract >= extractedArray[i].length)
+                throw new ArrayIndexOutOfBoundsException("index you want to extract doesn't exist");
+            indexFrom2DimArray[i] = extractedArray[i][indexToExtract];
+        }
+        return indexFrom2DimArray;
+    }
+
+    private static String[] createArrayWithUniqueElements(String[] inputArray) {  //In this workshop I don't want to use Sets or other Collection to get unique values
+        Arrays.sort(inputArray);
+        String[] uniqueFromArray = new String[1];
+        uniqueFromArray[0] = inputArray[0];
+        for (int i = 1; i < inputArray.length; i++) {
+                if(inputArray[i].equals(inputArray[i-1]))
+                    continue;
+                uniqueFromArray = ArrayUtils.add(uniqueFromArray, inputArray[i]);
+        }
+        return uniqueFromArray;
     }
 //    private static void list() {
 //        char decorElement = 9608;
