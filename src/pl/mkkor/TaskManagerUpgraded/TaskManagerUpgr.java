@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 import static pl.mkkor.TaskManagers.ConsoleColors.*;
 
-//3rd Solution - adding some additional options
+//3rd Solution - upgraded - adding some additional options and validations
 public class TaskManagerUpgr {
     final static String CSV_FILE = "tasks2.csv";
     final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "list ordered", "save", "exit", "exit w/o save"};
@@ -94,7 +94,7 @@ public class TaskManagerUpgr {
     }
 
 
-//CHOOSING OF THE OPTION
+//CHOOSING OF AN OPTION
     private static String choosingOption() {
         Scanner scan = new Scanner(System.in);
         String chosenOption;
@@ -113,7 +113,7 @@ public class TaskManagerUpgr {
     }
 
     private static String changeNumberToEquivalentListedOption(String chosenOption) {
-        if(chosenOption.length()== 2 && chosenOption.charAt(1)=='.') {  //I added this condition to make users typing numbers with a dot. The reason behind that is that inside remove option there is also possibilty to list all entries (to remind which entry should be removed). To list all entries inside remove option user must type 'list' (not a number); but if user will be accustomed to typing 3 (without dot) for listing he/she can type 3 also in remove method, what results in removing number 3 entry (instead of listing). So I want to get user accustemd to type number + dot (what, if user mistakenly type in remove option doesn't remove anything)
+        if(chosenOption.length()== 2 && chosenOption.charAt(1)=='.') {  //I added this condition to make users typing numbers with a dot. The reason behind that is that inside remove option there is also possibilty to list all entries (to remind which entry should be removed). To list all entries inside remove option user must type 'list' (not a number); but if user will be accustomed to typing 3 (without dot) for listing he/she can type 3 also in remove method, what results in removing number 3 entry (instead of displaying list). So I want to get user accustemd to type number + dot (what, if user mistakenly type in remove option, doesn't remove anything)
             chosenOption = chosenOption.substring(0, 1);
             if (NumberUtils.isDigits(chosenOption)) {
                 try {
@@ -143,13 +143,13 @@ public class TaskManagerUpgr {
         Scanner scan = new Scanner(System.in);
         String description;
         while(true){
-            System.out.println("Please add task description. Don't use commas (,). If you want to quit adding task type 'quit'");
+            System.out.println("Please add task description. Don't use commas (,). If you want to quit 'adding task' type 'quit'");
             description = scan.nextLine().trim();
             if(description.length() + 2 > lengthOfElem2){
                 System.out.println(description);
                 System.out.println(RED+"Length of your description: " + description.length() +
                         " signs, is too long; it can't be save. Maximal length is: " + (lengthOfElem2 - 2)+
-                        ". Copy your description from above and make it shorter to successful save." + RESET );
+                        ". Copy your description from above and make it shorter to successful save in a file." + RESET );
                 continue;
             }
             if (description.contains(",")) {
@@ -431,34 +431,7 @@ public class TaskManagerUpgr {
         }
         return uniqueFromArray;
     }
-//    private static void list() {
-//        char decorElement = 9608;
-//        int lengthOfTable = 100;
-//        String topBorder = decorLine("",lengthOfTable,0,decorElement);
-//        String labelDescript = decorLine("description", lOfDescr, lOfCount + 1, ' ');
-//        System.out.println(GREEN + topBorder + RESET);
-//        System.out.println(PURPLE + " " + message + RESET);
-//        System.out.println(CYAN + "     " + labelDescript + "  date " + "importance" + RESET);
 
-//        String n = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
-//        System.out.println(GREEN + n + RESET);
-//        System.out.println(PURPLE + "message" + RESET);
-//        String stringOfSpaces = new String(new char[lengthOfTable]).replace('\u0000', ' ');
-//        StringBuilder s = new StringBuilder(stringOfSpaces);
-//        s.replace(lOfCount+1,"description".length()+lOfCount+1, "description").
-//                replace(lOfCount+lOfDescr+1, "date".length()+lOfCount+lOfDescr+1, "date").
-//                replace(lOfCount+lOfDescr+lOfDate+1, "import?".length()+lOfCount+lOfDescr+lOfDate+1, "import?");
-//        System.out.println(CYAN + s + RESET);
-
-//        listDecorationTop();
-//        int counter = 1;
-//        for (int i = 0; i < dataFromFileArray.length; i++) {
-//            System.out.print(" " + counter + " : ");
-//            System.out.println(fillLine(lengthOfTable, dataFromFileArray[i][0], dataFromFileArray[i][1], dataFromFileArray[i][2]));
-//            counter++;
-//        }
-//        System.out.println(GREEN + n + RESET);
-//    }
 
 //SAVE OPTION
     private static void save() {
