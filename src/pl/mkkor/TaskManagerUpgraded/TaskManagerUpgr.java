@@ -387,10 +387,11 @@ public class TaskManagerUpgr {
     private static void listDecorationTop(String title) {
         char decorElement = '█';
         String topElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
+        String titleLine = new String(new char[lengthOfTable - title.length() - 1]).replace('\u0000', ' ');
+
         System.out.println(GREEN + "\t " + topElement);
-        String titleElement = new String(new char[lengthOfTable]).replace('\u0000', ' ');
-        System.out.println("\t│ " + PURPLE_BOLD + title);
-        System.out.println(GREEN + "\t│" + RED + fillInsideOfTable("No.", "description", "date", "important")+GREEN+"│");
+        System.out.println("\t│ " + PURPLE_BOLD + title + titleLine + GREEN + "│");
+        System.out.println("\t│" + RED + fillInsideOfTable("No.", "description", "date", "important") + GREEN + "│");
     }
 
     private static void listDecorationBottom() {
@@ -401,6 +402,7 @@ public class TaskManagerUpgr {
 
     private static void listN(String title) {
         listDecorationTop(title);
+
         int counter = 1;
         String description;
         String date;
@@ -412,6 +414,7 @@ public class TaskManagerUpgr {
             System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
             counter++;
         }
+
         listDecorationBottom();
     }
 
@@ -435,16 +438,6 @@ public class TaskManagerUpgr {
         importanceLine.replace(marigin,importance.length() + marigin, importance);
 
         return String.valueOf(counterLine.append(descriptionLine).append(dateLine).append(importanceLine));
-    }
-
-
-    private static String decorLine(String message, int lengthOfLine, int lengthOfInitialSpace, char fillingElement) {
-        String beforeMessage = new String(new char[lengthOfInitialSpace]).replace('\u0000', ' ');
-
-        String afterMessage = new String(new char[lengthOfLine - message.length() - lengthOfInitialSpace]);
-        afterMessage = afterMessage.replace('\u0000', fillingElement);
-        return beforeMessage + message + afterMessage;
-
     }
 
 //SAVE OPTION
