@@ -399,6 +399,8 @@ public class TaskManagerUpgr {
     }
 
     private static String[] createArrayWithUniqueElements(String[] inputArray) {  //In this workshop I don't want to use Sets or other Collection to get unique values
+        if(inputArray.length == 0)
+            return inputArray;
         Arrays.sort(inputArray);
         String[] uniqueFromArray = new String[1];
         uniqueFromArray[0] = inputArray[0];
