@@ -13,7 +13,7 @@ import java.util.Scanner;
 
 import static pl.mkkor.TaskManagers.ConsoleColors.*;
 
-//3nd Solution - adding some additional options
+//3rd Solution - adding some additional options
 public class TaskManagerUpgr {
     final static String CSV_FILE = "tasks2.csv";
     final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "list ordered", "save", "exit", "exit w/o save"};
@@ -67,7 +67,8 @@ public class TaskManagerUpgr {
         }
     }
 
-//READ DATA FROM FILE METHOD
+
+//READ DATA FROM FILE
     private static void readDataFromFile() throws FileNotFoundException {
         dataFromFileArray = new String[0][];
         File csvFileDirectory = new File(CSV_FILE);
@@ -276,7 +277,7 @@ public class TaskManagerUpgr {
 
     private static boolean areElementsToRemoveInTheList(String[] tasksToRemove) {
         for (String taskToRemove : tasksToRemove) {
-            if(Integer.parseInt(taskToRemove) - 1 >= dataFromFileArray.length){
+            if(Integer.parseInt(taskToRemove) - 1 >= dataFromFileArray.length || Integer.parseInt(taskToRemove) == 0 ){
                 System.out.println(RED + "Number " + taskToRemove + " you inserted is not on the list." + RESET);
                 return false;
             }
@@ -448,7 +449,7 @@ public class TaskManagerUpgr {
                         fileWriter.append(dataFromFileArray[i][j]).append(", ");
                 }
             }
-            System.out.println(WHITE_UNDERLINED + "All data were saved in a file.\n");
+            System.out.println(WHITE_UNDERLINED + "Inserted data were saved in a file.\n");
         } catch (IOException e) {
             System.out.println(RED + "There was a problem with finding or writing to a file. Check directory. " + RED_BOLD_BRIGHT +"Data were not saved\n" + RESET);
             e.printStackTrace();
