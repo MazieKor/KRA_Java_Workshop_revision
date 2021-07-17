@@ -45,10 +45,10 @@ public class TaskManagerUpgr {
                     remove();
                     break;
                 case "list":
-                    listN("List of All tasks:");
+                    list("List of All Tasks:");
                     break;
                 case "list important":
-                    listImportant();
+                    listImportant("List of important issues:");
                     break;
                 case "list ordered":
                     listOrdered();
@@ -227,7 +227,7 @@ public class TaskManagerUpgr {
             numberToRemove = scan.nextLine().trim();
 
             if (isQuitting(numberToRemove)) break;
-            if (numberToRemove.equalsIgnoreCase("list")) { list(); continue; }
+            if (numberToRemove.equalsIgnoreCase("list")) { list("List of All Tasks:"); continue; }
 
             String[] tasksToRemove = numberToRemove.split(",");
             trimArrayElements(tasksToRemove);
@@ -286,34 +286,88 @@ public class TaskManagerUpgr {
 
 
 //LISTING OF ENTRIES OPTION
-    private static void list() {
-        int counter = 1;
-        System.out.println(PURPLE + "\nList: " + RESET);
-        for (String[] array : dataFromFileArray) {
-            System.out.print(" " + counter + " : ");
-            for (String index : array) {
-                System.out.print(index + " ");
-            }
-            System.out.println("\b");
-            counter++;
-        }
-        System.out.println();
+
+    private static void listDecorationTop(String title) {
+        char decorElement = '█';
+        String topElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
+        String titleLine = new String(new char[lengthOfTable - title.length() - 1]).replace('\u0000', ' ');
+
+        System.out.println(GREEN + "\t " + topElement);
+        System.out.println("\t│ " + PURPLE_BOLD + title + titleLine + GREEN + "│");
+        System.out.println("\t│" + RED + fillInsideOfTable("No.", "description", "date", "important") + GREEN + "│");
     }
 
-    private static void listImportant() {
+    private static void listDecorationBottom() {
+        char decorElement = '■';
+        String bottomElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
+        System.out.println(GREEN + "\t " + bottomElement +"\n");
+    }
+
+    private static void list(String title) {
+        listDecorationTop(title);
+
         int counter = 1;
-        System.out.println(PURPLE + "\nList of important issues: " + RESET);
+        String description;
+        String date;
+        String importance;
+        for (int i = 0; i < dataFromFileArray.length; i++) {
+            description = dataFromFileArray[i][0];   //NEW żeby się dostac do 2. wymiaru nie muszę robić pętli drugiej
+            date = dataFromFileArray[i][1];
+            importance = dataFromFileArray[i][2];
+            System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
+            counter++;
+        }
+
+        listDecorationBottom();
+    }
+
+    private static String fillInsideOfTable(String counter, String description, String date, String importance) {
+        String elementCounter = new String(new char[lengthOfElem1]).replace('\u0000', ' ');
+        String elementDescription = new String(new char[lengthOfElem2]).replace('\u0000', ' ');
+        String elementDate = new String(new char[lengthOfElem3]).replace('\u0000', ' ');
+        String elementImportance = new String(new char[lengthOfElem4]).replace('\u0000', ' ');
+        int marigin = 2;
+
+        StringBuilder counterLine = new StringBuilder(elementCounter);
+        counterLine.replace(4,5,":").replace(marigin,counter.length() + marigin, counter);
+
+        StringBuilder descriptionLine = new StringBuilder(elementDescription);
+        descriptionLine.replace(marigin,description.length() + marigin, description);
+
+        StringBuilder dateLine = new StringBuilder(elementDate);
+        dateLine.replace(marigin,date.length() + marigin, date);
+
+        StringBuilder importanceLine = new StringBuilder(elementImportance);
+        importanceLine.replace(marigin,importance.length() + marigin, importance);
+
+        return String.valueOf(counterLine.append(descriptionLine).append(dateLine).append(importanceLine));
+    }
+
+    private static void listImportant(String title) {
+        listDecorationTop(title);
+
+        int counter = 1;
+        String description;
+        String date;
+        String importance;
         for (int i = 0; i < dataFromFileArray.length; i++) {
             if(dataFromFileArray[i][2].equals("true")) {
-                System.out.print(" " + counter + " : ");
-                for (int j = 0; j < dataFromFileArray[i].length; j++) {
-                    System.out.print(dataFromFileArray[i][j] + " ");
-                }
-                System.out.println("\b");
+                description = dataFromFileArray[i][0];
+                date = dataFromFileArray[i][1];
+                importance = dataFromFileArray[i][2];
+                System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
                 counter++;
+//                System.out.print(" " + counter + " : ");
+//                for (int j = 0; j < dataFromFileArray[i].length; j++) {
+//                    System.out.print(dataFromFileArray[i][j] + " ");
+//                }
+//                System.out.println("\b");
+//                counter++;
             }
         }
-        System.out.println(CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
+
+        listDecorationBottom();
+        System.out.println("\t " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
     }
 
     private static void listOrdered() {
@@ -383,62 +437,6 @@ public class TaskManagerUpgr {
 //        }
 //        System.out.println(GREEN + n + RESET);
 //    }
-
-    private static void listDecorationTop(String title) {
-        char decorElement = '█';
-        String topElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
-        String titleLine = new String(new char[lengthOfTable - title.length() - 1]).replace('\u0000', ' ');
-
-        System.out.println(GREEN + "\t " + topElement);
-        System.out.println("\t│ " + PURPLE_BOLD + title + titleLine + GREEN + "│");
-        System.out.println("\t│" + RED + fillInsideOfTable("No.", "description", "date", "important") + GREEN + "│");
-    }
-
-    private static void listDecorationBottom() {
-        char decorElement = '■';
-        String bottomElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
-        System.out.println(GREEN + "\t " + bottomElement +"\n");
-    }
-
-    private static void listN(String title) {
-        listDecorationTop(title);
-
-        int counter = 1;
-        String description;
-        String date;
-        String importance;
-        for (int i = 0; i < dataFromFileArray.length; i++) {
-            description = dataFromFileArray[i][0];
-            date = dataFromFileArray[i][1];
-            importance = dataFromFileArray[i][2];
-            System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
-            counter++;
-        }
-
-        listDecorationBottom();
-    }
-
-    private static String fillInsideOfTable(String counter, String description, String date, String importance) {
-        String elementCounter = new String(new char[lengthOfElem1]).replace('\u0000', ' ');
-        String elementDescription = new String(new char[lengthOfElem2]).replace('\u0000', ' ');
-        String elementDate = new String(new char[lengthOfElem3]).replace('\u0000', ' ');
-        String elementImportance = new String(new char[lengthOfElem4]).replace('\u0000', ' ');
-        int marigin = 2;
-
-        StringBuilder counterLine = new StringBuilder(elementCounter);
-        counterLine.replace(4,5,":").replace(marigin,counter.length() + marigin, counter);
-
-        StringBuilder descriptionLine = new StringBuilder(elementDescription);
-        descriptionLine.replace(marigin,description.length() + marigin, description);
-
-        StringBuilder dateLine = new StringBuilder(elementDate);
-        dateLine.replace(marigin,date.length() + marigin, date);
-
-        StringBuilder importanceLine = new StringBuilder(elementImportance);
-        importanceLine.replace(marigin,importance.length() + marigin, importance);
-
-        return String.valueOf(counterLine.append(descriptionLine).append(dateLine).append(importanceLine));
-    }
 
 //SAVE OPTION
     private static void save() {
