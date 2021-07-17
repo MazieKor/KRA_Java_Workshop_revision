@@ -224,7 +224,7 @@ public class TaskManagerUpgr {
 
         removingLoop:
         while (true) {
-            System.out.println("Please select number (or numbers) of task you want to remove from the list (if you want remove multiple tasks separate numbers with a 1 comma (,) ).\nIf you want to display list: type 'list', if you want to quit 'remove option' type: 'quit'.");
+            System.out.println("Please select number (or numbers) of task you want to remove from the list (for removing multiple tasks separate numbers with a 1 comma (,) ).\nIf you want to display list: type 'list', if you want to quit 'remove option' type: 'quit'.");
             numberToRemove = scan.nextLine().trim();
 
             if (isQuitting(numberToRemove)) break;
@@ -268,7 +268,7 @@ public class TaskManagerUpgr {
         }
         for (String taskToRemove : tasksToRemove) {
             if (!NumberUtils.isDigits(taskToRemove)) {
-                System.out.println(RED + "Not all elements to remove you signed are numbers or there is some empty elements or there are some characters other than 1 comma (eg. space, dot or double comma)" + RESET);
+                System.out.println(RED + "Not all elements to remove you typed are numbers or there are some empty elements or there are some characters other than 1 comma (eg. space, dot or double comma)" + RESET);
                 return false;
             }
         }
