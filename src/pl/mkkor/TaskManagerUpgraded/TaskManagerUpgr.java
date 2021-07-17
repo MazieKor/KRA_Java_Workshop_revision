@@ -21,8 +21,8 @@ public class TaskManagerUpgr {
 
     static int lengthOfTable = 100;
     static int lengthOfElem1 = 6;
-    static int lengthOfElem3 = 7;
-    static int lengthOfElem4 = 12;
+    static int lengthOfElem3 = 12;
+    static int lengthOfElem4 = 11;
     static int lengthOfElem2 = lengthOfTable-lengthOfElem1-lengthOfElem3-lengthOfElem4;
 
     public static void main(String[] args) {
@@ -45,7 +45,7 @@ public class TaskManagerUpgr {
                     remove();
                     break;
                 case "list":
-                    listN();
+                    listN("List of All tasks:");
                     break;
                 case "list important":
                     listImportant();
@@ -384,17 +384,23 @@ public class TaskManagerUpgr {
 //        System.out.println(GREEN + n + RESET);
 //    }
 
-    private static void listDecorationTop() {
-        char decorElement = 9608;
-        int lengthOfTable = 100;
-        String n = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
-        System.out.println(GREEN + n + RESET);
-        System.out.println(PURPLE + "message" + RESET);
+    private static void listDecorationTop(String title) {
+        char decorElement = '█';
+        String topElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
+        System.out.println(GREEN + "\t " + topElement);
+        String titleElement = new String(new char[lengthOfTable]).replace('\u0000', ' ');
+        System.out.println("\t│ " + PURPLE_BOLD + title);
+        System.out.println(GREEN + "\t│" + RED + fillInsideOfTable("No.", "description", "date", "important")+GREEN+"│");
     }
 
-    private static void listN() {
+    private static void listDecorationBottom() {
+        char decorElement = '■';
+        String bottomElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
+        System.out.println(GREEN + "\t " + bottomElement +"\n");
+    }
 
-        System.out.println(PURPLE + "\nList: " + RESET);
+    private static void listN(String title) {
+        listDecorationTop(title);
         int counter = 1;
         String description;
         String date;
@@ -403,10 +409,10 @@ public class TaskManagerUpgr {
             description = dataFromFileArray[i][0];
             date = dataFromFileArray[i][1];
             importance = dataFromFileArray[i][2];
-            System.out.println(fillInsideOfTable(String.valueOf(counter),description,date,importance));
+            System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
             counter++;
         }
-        System.out.println();
+        listDecorationBottom();
     }
 
     private static String fillInsideOfTable(String counter, String description, String date, String importance) {
