@@ -129,9 +129,7 @@ public class TaskManagerUpgr {
 
 //ADD OPTION
     private static void add() {
-        Scanner scan = new Scanner(System.in);
-        System.out.println("Please add task description. If you want to quit adding option type 'quit'");
-        String description = scan.nextLine().trim();
+        String description = descriptionAddAndValidation();
         if(isQuitting(description)) return;
         dataFromFileArray = Arrays.copyOf(dataFromFileArray, dataFromFileArray.length + 1);  //differently than in readDataFromFile() method, I don't use addAll from ArrayUtils here;
         dataFromFileArray[dataFromFileArray.length - 1] = new String[3];
@@ -139,6 +137,28 @@ public class TaskManagerUpgr {
         dataFromFileArray[dataFromFileArray.length - 1][1] = dateAddAndValidation();
         dataFromFileArray[dataFromFileArray.length - 1][2] = importanceAddAndValidation();
         System.out.println();
+    }
+
+    private static String descriptionAddAndValidation() {
+        Scanner scan = new Scanner(System.in);
+        String description;
+        while(true){
+            System.out.println("Please add task description. Don't use commas (,). If you want to quit adding task type 'quit'");
+            description = scan.nextLine().trim();
+            if(description.length() + 2 > lengthOfElem2){
+                System.out.println(description);
+                System.out.println(RED+"Length of your description: " + description.length() +
+                        " signs, is too long; it can't be save. Maximal length is: " + (lengthOfElem2 - 2)+
+                        ". Copy your description from above and make it shorter to successful save." + RESET );
+                continue;
+            }
+            if (description.contains(",")) {
+                System.out.println(RED + "In description you used commas. Description can't be saved" + RESET);
+                continue;
+            }
+            break;
+        }
+        return description;
     }
 
     private static String dateAddAndValidation() {         //In this task I want to validate with loops, Array and NumberUtils and without date API or regex
