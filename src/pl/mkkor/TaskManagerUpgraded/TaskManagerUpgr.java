@@ -48,10 +48,10 @@ public class TaskManagerUpgr {
                     list("List of All Tasks:");
                     break;
                 case "list important":
-                    listImportant("List of important issues:");
+                    listImportant("List of important tasks:");
                     break;
                 case "list ordered":
-                    listOrdered();
+                    listOrdered("List of tasks ordered by date, from the earliest:");
                     break;
                 case "save":
                     save();
@@ -357,12 +357,6 @@ public class TaskManagerUpgr {
                 importance = dataFromFileArray[i][2];
                 System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
                 counter++;
-//                System.out.print(" " + counter + " : ");
-//                for (int j = 0; j < dataFromFileArray[i].length; j++) {
-//                    System.out.print(dataFromFileArray[i][j] + " ");
-//                }
-//                System.out.println("\b");
-//                counter++;
             }
         }
 
@@ -370,22 +364,27 @@ public class TaskManagerUpgr {
         System.out.println("\t " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
     }
 
-    private static void listOrdered() {
+    private static void listOrdered(String title) {
+        listDecorationTop(title);
         String[] datesFromArray = extractDimensionFrom2DimArray(1, dataFromFileArray);
         String[] uniqueDatesFromArray = createArrayWithUniqueElements(datesFromArray);
 
-        System.out.println(PURPLE + "\nList of issues ordered by date from the newest: " + RESET);
         int counter = 1;
+        String description;
+        String date;
+        String importance;
         for (int i = 0; i < uniqueDatesFromArray.length; i++) {
             for (int j = 0; j < dataFromFileArray.length; j++){
                 if(uniqueDatesFromArray[i].equals(dataFromFileArray[j][1])) {      //NEW IF NIE KOńCZY PĘTLI jak stosuję if w pętli a nie dam continue to po warunku sprawdza następne
-                System.out.print(" " + counter + " : ");
-                System.out.println(dataFromFileArray[j][0] + " " + dataFromFileArray[j][1] + " " + dataFromFileArray[j][2]);
-                counter++;
+                    description = dataFromFileArray[j][0];
+                    date = dataFromFileArray[j][1];
+                    importance = dataFromFileArray[j][2];
+                    System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
+                    counter++;
                 }
             }
         }
-        System.out.println();
+        listDecorationBottom();
     }
 
     private static String[] extractDimensionFrom2DimArray(int indexToExtract, String[][] extractedArray) {
