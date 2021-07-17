@@ -148,7 +148,7 @@ public class TaskManagerUpgr {
         while(true){
             System.out.println("Please add task description. Don't use commas (,). If you want to quit 'adding task' type 'quit'");
             description = scan.nextLine().trim();
-            if(description.length() + 2 > lengthOfElem2){
+            if(description.length() + 2 > lengthOfElem2){   //I add 2 because in fillInsideOfTable method I add 2-points long marigin at the beginning of description. Without checking the length of a description format of displaying table ('list' option) would be broken
                 System.out.println(description);
                 System.out.println(RED+"Length of your description: " + description.length() +
                         " signs, is too long; it can't be save. Maximal length is: " + (lengthOfElem2 - 2)+
@@ -156,7 +156,7 @@ public class TaskManagerUpgr {
                 continue;
             }
             if (description.contains(",")) {
-                System.out.println(RED + "In description you used commas. Description can't be saved" + RESET);
+                System.out.println(RED + "In description are used commas. Description can't be saved" + RESET);
                 continue;
             }
             break;
