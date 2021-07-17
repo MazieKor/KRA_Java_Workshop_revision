@@ -19,11 +19,11 @@ public class TaskManagerUpgr {
     final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list important", "list ordered", "save", "exit", "exit w/o save"};
     static String[][] dataFromFileArray;
 
-    static int lengthOfTable = 120;
-    static int lengthOfElem1;
-    static int lengthOfElem2;
-    static int lengthOfElem3;
-    static int lengthOfElem4;
+    static int lengthOfTable = 100;
+    static int lengthOfElem1 = 6;
+    static int lengthOfElem3 = 7;
+    static int lengthOfElem4 = 12;
+    static int lengthOfElem2 = lengthOfTable-lengthOfElem1-lengthOfElem3-lengthOfElem4;
 
     public static void main(String[] args) {
         try {
@@ -45,7 +45,7 @@ public class TaskManagerUpgr {
                     remove();
                     break;
                 case "list":
-                    list();
+                    listN();
                     break;
                 case "list important":
                     listImportant();
@@ -86,7 +86,7 @@ public class TaskManagerUpgr {
         System.out.println(BLUE + "Please select an option (type number + a dot or option name, eg. '3.' or 'list'):" + RESET);
         int counter = 1;
         for (String row : OPTIONS_TO_SELECT) {
-            System.out.print(counter+ "." + row + "  |  ");
+            System.out.print(counter + "." + row + "  |  ");
             counter++;
         }
         System.out.println("\b\b\b");
@@ -392,26 +392,44 @@ public class TaskManagerUpgr {
         System.out.println(PURPLE + "message" + RESET);
     }
 
-//    private static String fillLine(int lengthOfTable,String description, String date, String importance) {
-//        int lOfCount = 5;
-//        String elementCounter = new String(new char[lOfCount]).replace('\u0000', ' ')
-//
-//        int lOfImportance = 7;
-//        String elementCounter = new String(new char[lOfCount]).replace('\u0000', ' ')
-//
-//        int lOfDate = 12;
-//        String elementCounter = new String(new char[lOfCount]).replace('\u0000', ' ')
-//
-//        int lOfDescr = lengthOfTable - lOfCount - lOfImportance - lOfDate-2;
-//        String elementCounter = new String(new char[lOfCount]).replace('\u0000', ' ')
-//
-//        String stringOfSpaces = new String(new char[lengthOfTable]).replace('\u0000', ' ');
-//        StringBuilder s = new StringBuilder(stringOfSpaces);
-//        s.replace(lOfCount +1,description.length()+ lOfCount +1, description).
-//                replace(lOfCount + lOfDescr +1, date.length()+ lOfCount + lOfDescr +1, date).
-//                replace(lOfCount + lOfDescr + lOfDate +1, importance.length()+ lOfCount + lOfDescr + lOfDate +1, importance);
-//        return s.toString();
-//    }
+    private static void listN() {
+
+        System.out.println(PURPLE + "\nList: " + RESET);
+        int counter = 1;
+        String description;
+        String date;
+        String importance;
+        for (int i = 0; i < dataFromFileArray.length; i++) {
+            description = dataFromFileArray[i][0];
+            date = dataFromFileArray[i][1];
+            importance = dataFromFileArray[i][2];
+            System.out.println(fillInsideOfTable(String.valueOf(counter),description,date,importance));
+            counter++;
+        }
+        System.out.println();
+    }
+
+    private static String fillInsideOfTable(String counter, String description, String date, String importance) {
+        String elementCounter = new String(new char[lengthOfElem1]).replace('\u0000', ' ');
+        String elementDescription = new String(new char[lengthOfElem2]).replace('\u0000', ' ');
+        String elementDate = new String(new char[lengthOfElem3]).replace('\u0000', ' ');
+        String elementImportance = new String(new char[lengthOfElem4]).replace('\u0000', ' ');
+        int marigin = 2;
+
+        StringBuilder counterLine = new StringBuilder(elementCounter);
+        counterLine.replace(4,5,":").replace(marigin,counter.length() + marigin, counter);
+
+        StringBuilder descriptionLine = new StringBuilder(elementDescription);
+        descriptionLine.replace(marigin,description.length() + marigin, description);
+
+        StringBuilder dateLine = new StringBuilder(elementDate);
+        dateLine.replace(marigin,date.length() + marigin, date);
+
+        StringBuilder importanceLine = new StringBuilder(elementImportance);
+        importanceLine.replace(marigin,importance.length() + marigin, importance);
+
+        return String.valueOf(counterLine.append(descriptionLine).append(dateLine).append(importanceLine));
+    }
 
 
     private static String decorLine(String message, int lengthOfLine, int lengthOfInitialSpace, char fillingElement) {
