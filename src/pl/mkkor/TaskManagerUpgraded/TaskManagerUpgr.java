@@ -290,7 +290,7 @@ public class TaskManagerUpgr {
             return false;
         }
         for (String taskToRemove : tasksToRemove) {
-            if (!NumberUtils.isDigits(taskToRemove)) {   //Uwaga z digitami jeśli potem robię z nimi jakieś działania, np. wpisuję 1 albo 0 - sprawdza, ze jt digit, ale w dalszej części kodu ta liczba jest zmniejszana np. o 1 lub 2 i powstaje iczba minusowa - niby też liczba, ale z -, którego normalnie ta funkcja by nie przepuściała (bo np. index tablicy nie może być minusowy)
+            if (!NumberUtils.isDigits(taskToRemove)) {   //NEW: Uwaga z digitami jeśli potem robię z nimi jakieś działania, np. wpisuję 1 albo 0 - sprawdza, ze jt digit, ale w dalszej części kodu ta liczba jest zmniejszana np. o 1 lub 2 i powstaje iczba minusowa - niby też liczba, ale z -, którego normalnie ta funkcja by nie przepuściała (bo np. index tablicy nie może być minusowy)
                 System.out.println(RED + "Not all elements to remove you typed are numbers or there are some empty elements or there are some characters other than 1 comma (eg. space, dot or double comma)" + RESET);
                 return false;
             }
@@ -457,7 +457,7 @@ public class TaskManagerUpgr {
             }
         }
         listDecorationBottom();
-        System.out.println("\t " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
+        System.out.println("\033[1A " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
     }
 
 
