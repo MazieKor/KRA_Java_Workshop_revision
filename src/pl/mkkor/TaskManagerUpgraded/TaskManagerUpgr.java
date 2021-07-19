@@ -368,13 +368,15 @@ public class TaskManagerUpgr {
         String[] datesFromArray = extractDimensionFrom2DimArray(indexToExtract, dataFromFileArray);
         String[] uniqueDatesFromArray = createArrayWithUniqueElements(datesFromArray);
 
+        int counter = 1;
         for (int i = 0; i < uniqueDatesFromArray.length; i++) {
-            for (String[] strings : dataFromFileArray) {
-                if (uniqueDatesFromArray[i].equals(strings[1])) {
-                    String description = strings[0];
-                    String date = strings[1];
-                    String importance = strings[2];
-                    System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(i + 1), description, date, importance) + GREEN + "│");
+            for (String[] dataFromFile : dataFromFileArray) {
+                if (uniqueDatesFromArray[i].equals(dataFromFile[1])) {
+                    String description = dataFromFile[0];
+                    String date = dataFromFile[1];
+                    String importance = dataFromFile[2];
+                    System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter), description, date, importance) + GREEN + "│");
+                    counter++;
                 }
             }
         }
