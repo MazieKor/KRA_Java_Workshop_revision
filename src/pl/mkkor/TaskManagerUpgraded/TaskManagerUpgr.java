@@ -245,7 +245,6 @@ public class TaskManagerUpgr {
         Scanner scan = new Scanner(System.in);
         String numberToRemove;
 
-        removingLoop:
         while (true) {
             System.out.println("Please select number (or numbers) of task you want to remove from the original, full list (not the ordered or only important tasks list). For removing multiple tasks separate numbers with a 1 comma (,) ).\nIf you want to display list: type 'list', if you want to quit 'remove option' type: 'quit'.");
             numberToRemove = scan.nextLine().trim();
@@ -255,12 +254,12 @@ public class TaskManagerUpgr {
 
             String[] tasksToRemove = numberToRemove.split(",");
             trimArrayElements(tasksToRemove);
-            if (!areTrimmedArrayElementsDigits(tasksToRemove)) continue removingLoop;
-            if (!areElementsToRemoveInTheList(tasksToRemove)) continue removingLoop;
+            if (!areTrimmedArrayElementsDigits(tasksToRemove)) continue;
+            if (!areElementsToRemoveInTheList(tasksToRemove)) continue;
 
             for (String taskToRemove : tasksToRemove)
                     Arrays.fill(dataFromFileArray, Integer.parseInt(taskToRemove)-1, Integer.parseInt(taskToRemove), null);
-            dataFromFileArray = ArrayUtils.removeAllOccurences(dataFromFileArray, null);  //NEW pamiętać ze ArrayUtil robi kopię
+            dataFromFileArray = ArrayUtils.removeAllOccurences(dataFromFileArray, null);
 
             if(tasksToRemove.length>1)
                 System.out.println(YELLOW_BRIGHT + "Entry numbers: " + String.join(", ", tasksToRemove) + " were removed" + RESET);
@@ -290,7 +289,7 @@ public class TaskManagerUpgr {
             return false;
         }
         for (String taskToRemove : tasksToRemove) {
-            if (!NumberUtils.isDigits(taskToRemove)) {   //NEW: Uwaga z digitami jeśli potem robię z nimi jakieś działania, np. wpisuję 1 albo 0 - sprawdza, ze jt digit, ale w dalszej części kodu ta liczba jest zmniejszana np. o 1 lub 2 i powstaje iczba minusowa - niby też liczba, ale z -, którego normalnie ta funkcja by nie przepuściała (bo np. index tablicy nie może być minusowy)
+            if (!NumberUtils.isDigits(taskToRemove)) {
                 System.out.println(RED + "Not all elements to remove you typed are numbers or there are some empty elements or there are some characters other than 1 comma (eg. space, dot or double comma)" + RESET);
                 return false;
             }
@@ -335,7 +334,7 @@ public class TaskManagerUpgr {
         String date;
         String importance;
         for (int i = 0; i < dataFromFileArray.length; i++) {
-            description = dataFromFileArray[i][0];   //NEW żeby się dostac do 2. wymiaru nie muszę robić pętli drugiej
+            description = dataFromFileArray[i][0];
             date = dataFromFileArray[i][1];
             importance = dataFromFileArray[i][2];
             System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
@@ -378,7 +377,7 @@ public class TaskManagerUpgr {
         String importance;
         for (int i = 0; i < uniqueDatesFromArray.length; i++) {
             for (int j = 0; j < dataFromFileArray.length; j++){
-                if(uniqueDatesFromArray[i].equals(dataFromFileArray[j][1])) {      //NEW IF NIE KOńCZY PĘTLI jak stosuję if w pętli a nie dam continue to po warunku sprawdza następne
+                if(uniqueDatesFromArray[i].equals(dataFromFileArray[j][1])) {
                     description = dataFromFileArray[j][0];
                     date = dataFromFileArray[j][1];
                     importance = dataFromFileArray[j][2];
