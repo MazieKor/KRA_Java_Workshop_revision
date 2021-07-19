@@ -1,8 +1,9 @@
 Simple task - very important, 2020-03-09, true
 Second task not so important, 2020-05-10, false
 Throw away trash, 2020-03-09, false
+Same date entry, 2020-03-09, true
 Nowy wpis, 2019-01-01, true
 nowe zajęcie, 1111-11-11, false
 nowe zajęcie 2, 1959-11-11, true
 nowe zajęcie 3, 1911-11-11, true
-nr 5, 1111-11-11, true
+Completely new task no 111, 2022-12-31, true

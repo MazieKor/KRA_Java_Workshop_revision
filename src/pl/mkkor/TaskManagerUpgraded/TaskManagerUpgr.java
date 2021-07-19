@@ -16,7 +16,8 @@ import static pl.mkkor.TaskManagers.ConsoleColors.*;
 //3rd Solution - upgraded - adding some additional options and validations
 public class TaskManagerUpgr {
     final static String CSV_FILE = "tasks2.csv";
-    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list ordered", "list important", "list important ordered", "save", "exit", "exit w/o save"};
+    final static String[] OPTIONS_TO_SELECT = new String[]{"add", "remove", "list", "list ordered",
+            "list important", "list important ordered", "save", "exit", "exit w/o save"};
     static String[][] dataFromFileArray;
 
     static int lengthOfTable = 110;
@@ -116,7 +117,7 @@ public class TaskManagerUpgr {
     }
 
     private static String changeNumberToEquivalentListedOption(String chosenOption) {
-        if(chosenOption.length()== 2 && chosenOption.charAt(1)=='.') {  //I added this condition to make users typing numbers with a dot. The reason behind that is that inside remove option there is also possibilty to list all entries (to remind which entry should be removed). To list all entries inside remove option user must type 'list' (not a number); but if user will be accustomed to typing 3 (without dot) for listing he/she can type 3 also in remove method, what results in removing number 3 entry (instead of displaying list). So I want to get user accustemd to type number + dot (what, if user mistakenly type in remove option, doesn't remove anything)
+        if(chosenOption.length()== 2 && chosenOption.charAt(1)=='.') {  //I added this condition to make users typing numbers with a dot. The reason behind that is that inside remove option there is also possibility to list all entries (to remind which entry should be removed). To list all entries inside remove option user must type 'list' (not a number); but if user will be accustomed to typing 3 (without dot) for listing he/she can type 3 also in remove method, what results in removing number 3 entry (instead of displaying list). So I want to get user accustomed to type number + dot (what, if user mistakenly type in remove option, doesn't remove anything)
             chosenOption = chosenOption.substring(0, 1);
             if (NumberUtils.isDigits(chosenOption)) {
                 try {
@@ -130,7 +131,7 @@ public class TaskManagerUpgr {
     }
 
 
-//ADD OPTION
+//ADD TO THE LIST
     private static void add() {
         String description = descriptionAddAndValidation();
         if(isQuitting(description)) return;
@@ -148,7 +149,7 @@ public class TaskManagerUpgr {
         while(true){
             System.out.println("Please add task description. Don't use commas (,). If you want to quit 'adding task' type 'quit'");
             description = scan.nextLine().trim();
-            if(description.length() + 2 > lengthOfElem2){   //I add 2 because in fillInsideOfTable method I add 2-points long marigin at the beginning of description. Without checking the length of a description format of displaying table ('list' option) would be broken
+            if(description.length() + 2 > lengthOfElem2){   //I add 2 because in fillInsideOfTable method I add 2-points long margin at the beginning of description. Without checking the length of a description format of displaying table ('list' option) would be broken
                 System.out.println(description);
                 System.out.println(RED+"Length of your description: " + description.length() +
                         " signs, is too long; it can't be save. Maximal length is: " + (lengthOfElem2 - 2)+
@@ -240,7 +241,7 @@ public class TaskManagerUpgr {
     }
 
 
-//REMOVE OPTION
+//REMOVE FROM THE LIST
     private static void remove() {
         Scanner scan = new Scanner(System.in);
         String numberToRemove;
@@ -271,7 +272,7 @@ public class TaskManagerUpgr {
 
     private static boolean isQuitting(String isQuitting) {
         if (isQuitting.equals("quit")) {
-            System.out.println("You have quitted this option." );
+            System.out.println("You have quited this option." );
             return true;
         }
         return false;
@@ -308,8 +309,7 @@ public class TaskManagerUpgr {
     }
 
 
-//LISTING OF ENTRIES OPTION
-
+//LISTING OF ENTRIES
     private static void listDecorationTop(String title) {
         char decorElement = '\u2588';
         String topElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
@@ -329,16 +329,11 @@ public class TaskManagerUpgr {
     private static void list(String title) {
         listDecorationTop(title);
 
-        int counter = 1;
-        String description;
-        String date;
-        String importance;
         for (int i = 0; i < dataFromFileArray.length; i++) {
-            description = dataFromFileArray[i][0];
-            date = dataFromFileArray[i][1];
-            importance = dataFromFileArray[i][2];
-            System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
-            counter++;
+            String description = dataFromFileArray[i][0];
+            String date = dataFromFileArray[i][1];
+            String importance = dataFromFileArray[i][2];
+            System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(i+1),description,date,importance) + GREEN + "│");
         }
 
         listDecorationBottom();
@@ -349,43 +344,41 @@ public class TaskManagerUpgr {
         String elementDescription = new String(new char[lengthOfElem2]).replace('\u0000', ' ');
         String elementDate = new String(new char[lengthOfElem3]).replace('\u0000', ' ');
         String elementImportance = new String(new char[lengthOfElem4]).replace('\u0000', ' ');
-        int marigin = 2;
+        int margin = 2;
 
         StringBuilder counterLine = new StringBuilder(elementCounter);
-        counterLine.replace(4,5,":").replace(marigin,counter.length() + marigin, counter);
+        counterLine.replace(4,5,":").replace(margin,counter.length() + margin, counter);
 
         StringBuilder descriptionLine = new StringBuilder(elementDescription);
-        descriptionLine.replace(marigin,description.length() + marigin, description);
+        descriptionLine.replace(margin,description.length() + margin, description);
 
         StringBuilder dateLine = new StringBuilder(elementDate);
-        dateLine.replace(marigin,date.length() + marigin, date);
+        dateLine.replace(margin,date.length() + margin, date);
 
         StringBuilder importanceLine = new StringBuilder(elementImportance);
-        importanceLine.replace(marigin,importance.length() + marigin, importance);
+        importanceLine.replace(margin,importance.length() + margin, importance);
 
         return String.valueOf(counterLine.append(descriptionLine).append(dateLine).append(importanceLine));
     }
 
     private static void listOrdered(String title) {
         listDecorationTop(title);
-        String[] datesFromArray = extractDimensionFrom2DimArray(1, dataFromFileArray);
+
+        int indexToExtract = 1;
+        String[] datesFromArray = extractDimensionFrom2DimArray(indexToExtract, dataFromFileArray);
         String[] uniqueDatesFromArray = createArrayWithUniqueElements(datesFromArray);
 
-        int counter = 1;
-        String description;
-        String date;
-        String importance;
         for (int i = 0; i < uniqueDatesFromArray.length; i++) {
-            for (int j = 0; j < dataFromFileArray.length; j++){
-                if(uniqueDatesFromArray[i].equals(dataFromFileArray[j][1])) {
-                    description = dataFromFileArray[j][0];
-                    date = dataFromFileArray[j][1];
-                    importance = dataFromFileArray[j][2];
-                    System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
-                    counter++;
+            for (String[] strings : dataFromFileArray) {
+                if (uniqueDatesFromArray[i].equals(strings[1])) {
+                    String description = strings[0];
+                    String date = strings[1];
+                    String importance = strings[2];
+                    System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(i + 1), description, date, importance) + GREEN + "│");
                 }
             }
         }
+
         listDecorationBottom();
     }
 
@@ -417,14 +410,11 @@ public class TaskManagerUpgr {
         listDecorationTop(title);
 
         int counter = 1;
-        String description;
-        String date;
-        String importance;
         for (int i = 0; i < dataFromFileArray.length; i++) {
             if(dataFromFileArray[i][2].equals("true")) {
-                description = dataFromFileArray[i][0];
-                date = dataFromFileArray[i][1];
-                importance = dataFromFileArray[i][2];
+                String description = dataFromFileArray[i][0];
+                String date = dataFromFileArray[i][1];
+                String importance = dataFromFileArray[i][2];
                 System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
                 counter++;
             }
@@ -441,27 +431,24 @@ public class TaskManagerUpgr {
         String[] uniqueDatesFromArray = createArrayWithUniqueElements(datesFromArray);
 
         int counter = 1;
-        String description;
-        String date;
-        String importance;
         for (int i = 0; i < uniqueDatesFromArray.length; i++) {
             for (int j = 0; j < dataFromFileArray.length; j++){
                 if(uniqueDatesFromArray[i].equals(dataFromFileArray[j][1]) && dataFromFileArray[j][2].equals("true")) {
-                    description = dataFromFileArray[j][0];
-                    date = dataFromFileArray[j][1];
-                    importance = dataFromFileArray[j][2];
+                    String description = dataFromFileArray[j][0];
+                    String date = dataFromFileArray[j][1];
+                    String importance = dataFromFileArray[j][2];
                     System.out.println(GREEN + "\t│" + WHITE_BRIGHT + fillInsideOfTable(String.valueOf(counter),description,date,importance) + GREEN + "│");
                     counter++;
                 }
             }
         }
+
         listDecorationBottom();
         System.out.println("\t " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)");
     }
 
 
-
-//SAVE OPTION
+//SAVE IN A FILE
     private static void save() {
         try (FileWriter fileWriter = new FileWriter(CSV_FILE)) {
             for (int i = 0; i < dataFromFileArray.length; i++) {
@@ -477,6 +464,6 @@ public class TaskManagerUpgr {
             System.out.println(RED + "There was a problem with finding or writing to a file. Check directory. " + RED_BOLD_BRIGHT +"Data were not saved" + RESET);
             e.printStackTrace();
         }
-
     }
+
 }
