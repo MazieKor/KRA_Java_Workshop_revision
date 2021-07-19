@@ -368,7 +368,7 @@ public class TaskManagerUpgr {
         String[] datesFromArray = extractDimensionFrom2DimArray(indexToExtract, dataFromFileArray);
         String[] uniqueDatesFromArray = createArrayWithUniqueElements(datesFromArray);
 
-        int counter = 1;
+        int counter = 1;                      //I want entries with the same date have different numbers on the list. If entries with the same date should have the same numbers on the list then I don't have to introduce this variable (just as above, in list() method)
         for (int i = 0; i < uniqueDatesFromArray.length; i++) {
             for (String[] dataFromFile : dataFromFileArray) {
                 if (uniqueDatesFromArray[i].equals(dataFromFile[1])) {
