@@ -87,7 +87,7 @@ public class TaskManagerUpgr {
 
 //DISPLAYING ALL OPTIONS
     private static void displayOptions() {
-        System.out.println(BLUE + "Please select an option (type number + a dot or option name, eg. '3.' or 'list'):" + RESET);
+        System.out.println(BLUE + "\nPlease select an option (type number + a dot or option name, eg. '3.' or 'list'):" + RESET);
         int counter = 1;
         for (String row : OPTIONS_TO_SELECT) {
             System.out.print(counter + "." + row + "  |  ");
@@ -139,7 +139,7 @@ public class TaskManagerUpgr {
         dataFromFileArray[dataFromFileArray.length - 1][0] = description;
         dataFromFileArray[dataFromFileArray.length - 1][1] = dateAddAndValidation();
         dataFromFileArray[dataFromFileArray.length - 1][2] = importanceAddAndValidation();
-        System.out.println();
+        System.out.println(YELLOW_BRIGHT + "New task was added"+ RESET);
     }
 
     private static String descriptionAddAndValidation() {
@@ -247,7 +247,7 @@ public class TaskManagerUpgr {
 
         removingLoop:
         while (true) {
-            System.out.println("Please select number (or numbers) of task you want to remove from the list (for removing multiple tasks separate numbers with a 1 comma (,) ).\nIf you want to display list: type 'list', if you want to quit 'remove option' type: 'quit'.");
+            System.out.println("Please select number (or numbers) of task you want to remove from the original, full list (not the ordered or only important tasks list). For removing multiple tasks separate numbers with a 1 comma (,) ).\nIf you want to display list: type 'list', if you want to quit 'remove option' type: 'quit'.");
             numberToRemove = scan.nextLine().trim();
 
             if (isQuitting(numberToRemove)) break;
@@ -263,16 +263,16 @@ public class TaskManagerUpgr {
             dataFromFileArray = ArrayUtils.removeAllOccurences(dataFromFileArray, null);  //NEW pamiętać ze ArrayUtil robi kopię
 
             if(tasksToRemove.length>1)
-                System.out.println(YELLOW + "Entry numbers: " + String.join(", ", tasksToRemove) + " were removed\n" + RESET);
+                System.out.println(YELLOW_BRIGHT + "Entry numbers: " + String.join(", ", tasksToRemove) + " were removed" + RESET);
             else
-                System.out.println(YELLOW + "Entry number " + String.join("", tasksToRemove) + " was removed\n" + RESET);
+                System.out.println(YELLOW_BRIGHT + "Entry number " + String.join("", tasksToRemove) + " was removed" + RESET);
             break;
         }
     }
 
     private static boolean isQuitting(String isQuitting) {
         if (isQuitting.equals("quit")) {
-            System.out.println("You have quitted this option.\n" );
+            System.out.println("You have quitted this option." );
             return true;
         }
         return false;
@@ -324,7 +324,7 @@ public class TaskManagerUpgr {
     private static void listDecorationBottom() {
         char decorElement = '■';
         String bottomElement = new String(new char[lengthOfTable]).replace('\u0000', decorElement);
-        System.out.println(GREEN + "\t " + bottomElement +"\n" + RESET);
+        System.out.println(GREEN + "\t " + bottomElement + RESET);
     }
 
     private static void list(String title) {
@@ -432,7 +432,7 @@ public class TaskManagerUpgr {
         }
 
         listDecorationBottom();
-        System.out.println("\t " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
+        System.out.println("\t " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)");
     }
 
     private static void listImportantOrdered(String title) {
@@ -457,7 +457,7 @@ public class TaskManagerUpgr {
             }
         }
         listDecorationBottom();
-        System.out.println("\033[1A " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)\n");
+        System.out.println("\t " + CYAN_UNDERLINED+"There are also " + (dataFromFileArray.length-(counter-1)) + " entries that are not important (importance = false)");
     }
 
 
@@ -473,9 +473,9 @@ public class TaskManagerUpgr {
                         fileWriter.append(dataFromFileArray[i][j]).append(", ");
                 }
             }
-            System.out.println(WHITE_UNDERLINED + "Inserted data were saved in a file.\n");
+            System.out.println(YELLOW_UNDERLINED + "Inserted data were saved in a file.");
         } catch (IOException e) {
-            System.out.println(RED + "There was a problem with finding or writing to a file. Check directory. " + RED_BOLD_BRIGHT +"Data were not saved\n" + RESET);
+            System.out.println(RED + "There was a problem with finding or writing to a file. Check directory. " + RED_BOLD_BRIGHT +"Data were not saved" + RESET);
             e.printStackTrace();
         }
 
