@@ -27,7 +27,7 @@ public class TaskManagerUpgr {
     static int lengthOfElem2 = lengthOfTable-lengthOfElem1-lengthOfElem3-lengthOfElem4;
 
     public static void main(String[] args) {
-        try {
+        try { 
             readDataFromFile();
         } catch (FileNotFoundException e) {
             System.out.println("Given file: '" + CSV_FILE + "' has not been found. Check file directory");
