@@ -1,4 +1,4 @@
 # KRA_Java_Workshop_revision
-Simple task manager with some options (as a workshop in CodersLab bootcamp).
+Simple task manager with some options.
 
-Please note, that final (with most functionalities) version of the Task Manager is in package "TaskManagerUpgraded".
+Please note, that the final (with most functionalities) version of the Task Manager is in package "TaskManagerUpgraded".
